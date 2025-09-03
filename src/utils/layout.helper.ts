@@ -21,30 +21,30 @@ export  const keys = [
 
 export const AboutLayout = {
     lg: [
-      { i: "a", x: 0, y: 0, w: 2, h: 2, isResizable: false },
-      { i: "b", x: 2, y: 0, w: 1, h: 1, isResizable: false },
-      { i: "c", x: 0, y: 4, w: 1, h: 1, isResizable: false },
-      { i: "d", x: 0, y: 2, w: 1, h: 1, isResizable: false },
-      { i: "e", x: 2, y: 7, w: 1, h: 1, isResizable: false },
-      { i: "f", x: 2, y: 1, w: 1, h: 1, isResizable: false },
-      { i: "g", x: 0, y: 6, w: 1, h: 1, isResizable: false },
-      { i: "h", x: 1, y: 6, w: 2, h: 1, isResizable: false },
-      { i: "i", x: 2, y: 2, w: 2, h: 1, isResizable: false },
-      { i: "j", x: 2, y: 7, w: 1, h: 1, isResizable: false },
-      { i: "k", x: 0, y: 7, w: 2, h: 1, static: true },
-      { i: "l", x: 0, y: 3, w: 1, h: 1, isResizable: false },
-      { i: "m", x: 1, y: 2, w: 2, h: 2, isResizable: false },
-      { i: "n", x: 0, y: 7, w: 1, h: 1, isResizable: false },
-      { i: "o", x: 1, y: 7, w: 1, h: 1, isResizable: false },
-      { i: "p", x: 2, y: 4, w: 1, h: 1, isResizable: false },
-      { i: "q", x: 0, y: 4, w: 2, h: 1, isResizable: false },
+      { i: "a", x: 0, y: 0, w: 2, h: 2, isResizable: false }, // 客户位置卡片 - 大卡片
+      { i: "b", x: 2, y: 0, w: 1, h: 2, isResizable: false }, // 网络制式卡片 - 竖向卡片  
+      { i: "c", x: 3, y: 0, w: 1, h: 2, isResizable: false }, // 轨迹概览卡片 - 竖向卡片
+      { i: "d", x: 0, y: 2, w: 2, h: 2, isResizable: false }, // 资源查询卡片 - 大卡片
+      { i: "e", x: 2, y: 2, w: 2, h: 2, isResizable: false }, // 账单查询卡片 - 大卡片，在d卡片右侧
+      { i: "f", x: 0, y: 4, w: 1, h: 1, isResizable: false },
+      { i: "g", x: 1, y: 4, w: 1, h: 1, isResizable: false },
+      { i: "h", x: 2, y: 4, w: 2, h: 1, isResizable: false },
+      { i: "i", x: 0, y: 5, w: 2, h: 2, isResizable: false }, // 其他卡片向下移动
+      { i: "j", x: 2, y: 5, w: 1, h: 1, isResizable: false },
+      { i: "k", x: 3, y: 5, w: 1, h: 1, isResizable: false },
+      { i: "l", x: 0, y: 7, w: 1, h: 1, isResizable: false },
+      { i: "m", x: 1, y: 7, w: 1, h: 1, isResizable: false },
+      { i: "n", x: 2, y: 6, w: 1, h: 1, isResizable: false },
+      { i: "o", x: 3, y: 6, w: 1, h: 1, isResizable: false },
+      { i: "p", x: 2, y: 7, w: 1, h: 1, isResizable: false },
+      { i: "q", x: 3, y: 7, w: 1, h: 1, isResizable: false },
     ],
     xs: [
-      { i: "a", x: 0, y: 0, w: 2, h: 1, static: true },
-      { i: "b", x: 0, y: 1, w: 1, h: 1, static: true },
-      { i: "c", x: 0, y: 7, w: 1, h: 1, static: true },
-      { i: "d", x: 0, y: 3, w: 1, h: 1, static: true },
-      { i: "e", x: 1, y: 4, w: 1, h: 1, static: true },
+      { i: "a", x: 0, y: 0, w: 2, h: 2, static: true }, // 客户位置卡片 - 移动端大卡片
+      { i: "b", x: 0, y: 2, w: 2, h: 1, static: true }, // 网络制式卡片 - 移动端横向
+      { i: "c", x: 0, y: 3, w: 2, h: 1, static: true }, // 轨迹概览卡片 - 移动端横向
+      { i: "d", x: 0, y: 4, w: 2, h: 2, static: true }, // 资源查询卡片 - 移动端大卡片
+      { i: "e", x: 0, y: 6, w: 2, h: 2, static: true }, // 账单查询卡片 - 移动端大卡片
       { i: "f", x: 0, y: 2, w: 1, h: 1, static: true },
       { i: "g", x: 1, y: 12, w: 2, h: 1, static: true },
       { i: "h", x: 0, y: 9, w: 2, h: 1, static: true },
