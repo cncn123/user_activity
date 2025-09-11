@@ -19,11 +19,11 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
   const hasOverage = data.isDataOverLimit || data.isVoiceOverLimit || data.isSmsOverLimit;
 
   return (
-    <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card shadow-2xl">
+    <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-cyan shadow-2xl">
       <div>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
-            <span className="w-3 h-3 bg-purple-300 rounded-full mr-3 animate-pulse shadow-lg"></span>
+            <span className="w-3 h-3 bg-cyan-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
             数据使用
           </h3>
           <div className="flex items-center space-x-2">
@@ -33,21 +33,24 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
                 超套警告
               </div>
             )}
-            <div className="flex items-center bg-blue-400/30 text-blue-100 px-3 py-1 rounded-full text-xs border border-blue-300/50 shadow-sm">
-            <span className="w-1.5 h-1.5 bg-blue-200 rounded-full mr-2 animate-ping"></span>
-            实时
-          </div>
+            <div className="flex items-center bg-cyan-500/20 text-cyan-100 px-3 py-1.5 rounded-full text-xs border border-cyan-400/30 shadow-sm backdrop-blur-sm">
+              <span className="mr-1.5">🕒</span>
+              <span className="text-cyan-100/90 font-mono mr-2">
+{new Date(new Date().getTime() - 8 * 60000).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+              <span className="text-white/80 text-xs font-medium">· 5分钟</span>
+            </div>
           </div>
         </div>
         
-        <div className="mb-4 glass-inner rounded-xl p-4 border border-white/10 text-center">
-          <div className="text-xs text-white/80 font-medium mb-1">当前套餐</div>
-          <div className="text-lg font-extrabold text-white drop-shadow-sm">{data.packageName}</div>
+        <div className="mb-6 text-center py-4 border-b border-cyan-400/20">
+          <div className="text-xs text-cyan-200 font-medium mb-1">当前套餐</div>
+          <div className="text-lg font-extrabold text-white drop-shadow-sm bg-cyan-500/10 px-4 py-2 rounded-lg border border-cyan-400/20">{data.packageName}</div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-5">
           {/* 数据流量 */}
-          <div className="glass-inner rounded-xl p-4 border border-white/10">
+          <div className="pb-4 border-b border-white/10">
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
                 📶 <span className="ml-2">数据流量</span>
@@ -61,9 +64,9 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
                 </div>
               </div>
             </div>
-            <div className="w-full bg-white/20 rounded-full h-3 mb-2">
+            <div className="w-full bg-cyan-500/10 rounded-full h-3 mb-2 border border-cyan-400/20">
               <div 
-                className={`h-3 rounded-full transition-all duration-500 ${data.isDataOverLimit ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-blue-500 to-cyan-500'}`}
+                className={`h-3 rounded-full transition-all duration-500 shadow-sm ${data.isDataOverLimit ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-cyan-400 to-cyan-600'}`}
                 style={{ width: `${Math.min(getUsagePercentage(data.dataUsed, data.dataTotal), 100)}%` }}
               ></div>
             </div>
@@ -76,7 +79,7 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
 
 
           {/* 网络状态 */}
-          <div className="glass-inner rounded-xl p-4 border border-white/10">
+          <div className="pt-4 border-t border-white/10">
             <div className="flex justify-between items-center">
               <span className="text-sm font-semibold text-white/90">网络状态</span>
               <span className={`text-sm font-semibold px-4 py-2 rounded-full border-2 ${getSpeedLimitColor(data.speedLimit)}`}>
@@ -87,9 +90,7 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
         </div>
       </div>
       
-      <div className="text-xs text-white/70 bg-white/10 px-3 py-2 rounded-lg">
-        🕒 更新时间: {new Date().toLocaleString('zh-CN')}
-      </div>
+
     </div>
   );
 };

@@ -29,15 +29,19 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card shadow-2xl">
+    <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-emerald shadow-2xl">
       <div>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
-            <span className="w-3 h-3 bg-green-300 rounded-full mr-3 animate-pulse shadow-lg"></span>
+            <span className="w-3 h-3 bg-emerald-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
             网络制式
           </h3>
-          <div className="text-xs text-white/90 font-semibold bg-white/20 px-3 py-1 rounded-full border border-green-300/50 shadow-sm">
-            连接状态
+          <div className="flex items-center bg-emerald-500/20 text-emerald-100 px-3 py-1.5 rounded-full text-xs border border-emerald-400/30 shadow-sm backdrop-blur-sm">
+            <span className="mr-1.5">🕒</span>
+            <span className="text-emerald-100/90 font-mono mr-2">
+              {new Date(new Date(data.timestamp).getTime() - 15 * 60000).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+            </span>
+            <span className="text-white/80 text-xs font-medium">· 15分钟</span>
           </div>
         </div>
         
@@ -48,8 +52,8 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
             </span>
           </div>
           
-          <div className="glass-inner rounded-xl p-4 border border-white/10">
-            <div className="flex justify-between items-center mb-3">
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
                 📶 <span className="ml-1">信号强度</span>
               </span>
@@ -60,23 +64,21 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
                 </div>
               </div>
             </div>
-            <div className="font-mono text-2xl text-emerald-300 text-center bg-white/5 py-2 rounded-lg">
+            <div className="font-mono text-2xl text-emerald-400 text-center bg-emerald-500/10 py-3 rounded-lg border border-emerald-400/20 shadow-inner">
               {getSignalBars(data.signalStrength)}
             </div>
           </div>
           
-          <div className="glass-inner rounded-xl p-3 text-center border border-white/10">
-            <div className="text-xs text-white/70 mb-1">技术制式</div>
-            <span className="text-sm font-semibold text-white bg-white/10 px-4 py-2 rounded-full">
+          <div className="text-center py-4 border-t border-white/10">
+            <div className="text-xs text-white/70 mb-2">技术制式</div>
+            <span className="text-sm font-semibold text-emerald-100 bg-emerald-500/20 px-4 py-2 rounded-full border border-emerald-400/30 shadow-sm">
               {data.networkType === '5G' ? '🚀 NSA/SA' : data.networkType === '4G' ? '⚡ LTE' : '📡 UMTS'}
             </span>
           </div>
         </div>
       </div>
       
-      <div className="text-xs text-white/70 bg-white/10 px-3 py-2 rounded-lg">
-        🕒 更新时间: {data.timestamp}
-      </div>
+
     </div>
   );
 };
