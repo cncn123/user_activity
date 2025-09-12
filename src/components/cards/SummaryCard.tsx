@@ -81,12 +81,6 @@ export const SummaryCard = ({ data }: SummaryCardProps) => {
               {data.isRoaming ? "🌐 漫游" : "🏠 本地"}
             </span>
           </div>
-          <div className="flex justify-between items-center py-3">
-            <span className="text-sm font-semibold text-violet-200">信号</span>
-            <span className="text-sm font-mono text-violet-300 font-bold bg-violet-500/10 px-3 py-1 rounded-full border border-violet-400/30">
-              {getSignalBars(data.signalStrength)} {data.signalStrength}/5
-            </span>
-          </div>
         </div>
       </div>
     </div>

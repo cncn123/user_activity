@@ -63,7 +63,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
 
       <div className="space-y-3 flex-1">
         {/* 当前月份账单 */}
-        <div className="pb-4 border-b border-white/10">
+        <div className="pb-4 border-b border-orange-400/20">
           <div className="flex justify-between items-center">
             <div>
               <div className="text-xs text-white/80 font-medium">本月账单</div>
@@ -87,7 +87,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
         </div>
 
         {/* 环比同比 */}
-        <div className="py-4 border-b border-white/10">
+        <div className="py-4 border-b border-orange-400/20">
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <div className="text-xs text-white/80 font-medium mb-1">
