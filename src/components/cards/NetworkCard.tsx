@@ -1,4 +1,6 @@
 import { NetworkData } from "../../types/customer";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faSignal, faRocket, faBolt, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 
 interface NetworkCardProps {
   data: NetworkData;
@@ -40,7 +42,7 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
             网络制式
           </h3>
           <div className="flex items-center bg-emerald-500/20 text-emerald-100 px-3 py-1.5 rounded-full text-xs border border-emerald-400/30 shadow-sm backdrop-blur-sm">
-            <span className="mr-1.5">🕒</span>
+            <FontAwesomeIcon icon={faClock} className="mr-1.5" />
             <span className="text-emerald-100/90 font-mono mr-2">
               {new Date(
                 new Date(data.timestamp).getTime() - 15 * 60000,
@@ -74,14 +76,19 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
                 ? 'bg-yellow-400/40 text-yellow-100 border-yellow-300/60'
                 : 'bg-red-400/40 text-red-100 border-red-300/60'
             }`}>
-              📶 {data.signalStrength}/5 · {data.signalStrength >= 4 ? "优秀" : data.signalStrength >= 3 ? "良好" : data.signalStrength >= 2 ? "一般" : "较差"}
+              <FontAwesomeIcon icon={faSignal} className="mr-2" />
+              {data.signalStrength}/5 · {data.signalStrength >= 4 ? "优秀" : data.signalStrength >= 3 ? "良好" : data.signalStrength >= 2 ? "一般" : "较差"}
             </span>
           </div>
           
           <div className="flex justify-between items-center py-3 border-b border-emerald-400/20">
             <span className="text-sm font-semibold text-emerald-200">技术制式</span>
             <span className="text-sm font-bold text-white drop-shadow-sm bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-400/30">
-              {data.networkType === "5G" ? "🚀 NSA/SA" : data.networkType === "4G" ? "⚡ LTE" : "📡 UMTS"}
+              <FontAwesomeIcon 
+                icon={data.networkType === "5G" ? faRocket : data.networkType === "4G" ? faBolt : faSatelliteDish} 
+                className="mr-2" 
+              />
+              {data.networkType === "5G" ? "NSA/SA" : data.networkType === "4G" ? "LTE" : "UMTS"}
             </span>
           </div>
         </div>

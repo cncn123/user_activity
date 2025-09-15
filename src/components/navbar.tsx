@@ -52,15 +52,13 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <div
-      className={`mx-auto top-0 z-[10000] backdrop-saturate-180 w-full pt-2 ${theme === "light" ? "text-gray-900" : "text-white"}`}
+      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-[10000] backdrop-saturate-180 ${theme === "light" ? "text-gray-900" : "text-white"}`}
       style={{
-        marginTop: "30px",
-        marginBottom: "30px",
-        paddingLeft: "10px",
-        paddingRight: "10px",
+        width: "calc(100% - 40px)",
+        maxWidth: "500px",
       }}
     >
-      <div className="glass-card glass-glow ambient-light max-w-[500px] w-full m-auto rounded-full text-1.8rem p-[8px] shadow-2xl">
+      <div className="glass-card glass-glow ambient-light rounded-full text-1.8rem p-[8px] shadow-2xl backdrop-blur-xl">
         <div className={`flex rounded-full p-2 justify-between items-center mx-auto relative ${theme === "light" ? "text-gray-900" : "text-white"}`}>
           {/* Theme Toggle Button */}
           <button

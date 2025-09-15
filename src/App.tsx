@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Layout from "./components/layout";
+import Layout from "./components/Sidebar";
 import Navbar from "./components/navbar";
 import { useTheme } from "./hooks/useTheme";
 
@@ -10,8 +10,15 @@ export enum TabKey {
   // Contact = "Contact",
 }
 
+export enum UserKey {
+  user1 = "商务精英",
+  user2 = "学生用户", 
+  user3 = "居家用户",
+}
+
 function App() {
   const [tab, setTab] = useState<TabKey>(TabKey.kejikegan);
+  const [selectedUser, setSelectedUser] = useState<UserKey>(UserKey.user1);
   const { theme, toggleTheme } = useTheme();
 
   const tabOffsets: { [key in TabKey]: number } = {
@@ -36,7 +43,7 @@ function App() {
         theme={theme}
         onThemeToggle={toggleTheme}
       />
-      <Layout tab={tab} setTab={setTab} left={x} sliderWidth={w} />
+      <Layout tab={tab} setTab={setTab} left={x} sliderWidth={w} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
     </main>
   );
 }

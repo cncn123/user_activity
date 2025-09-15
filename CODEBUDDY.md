@@ -33,13 +33,16 @@ This is a React + TypeScript + Vite application that creates a dynamic bento gri
 - `components/layout.tsx`: Main grid component that switches layouts based on active tab
 - `components/navbar.tsx`: Navigation with animated slider and theme toggle
 - `components/CustomerCards.tsx`: Renders individual grid items with customer data cards
+- `components/Timeline.tsx`: Reusable timeline component based on shadcn/ui design
+- `services/aiService.ts`: AI service for generating user profile insights
 
 **Card Components:**
-- `cards/LocationCard.tsx`: Customer location tracking with timeline
+- `cards/LocationCard.tsx`: Customer location tracking with timeline (uses Timeline component)
 - `cards/NetworkCard.tsx`: Network type and signal strength display  
 - `cards/BillingCard.tsx`: Billing history with Recharts line chart
 - `cards/ResourceCard.tsx`: Data/voice/SMS usage meters
 - `cards/SummaryCard.tsx`: Overview card with key metrics
+- `cards/AIProfileCard.tsx`: AI-powered user profile analysis and insights
 
 ### Layout Configuration System
 
@@ -52,6 +55,14 @@ Each tab has specific grid item positions defined in `layout.helper.ts`:
 - `TabKey.kejikegan` → `AboutLayout` (customer overview focus)
 - `TabKey.kexiang` → `ProjectsLayouts` (projects/services focus)  
 - `TabKey.keji` → `ContactLayouts` (contact/support focus)
+
+**Card Mapping in Layout:**
+- Tile a: LocationCard (customer location tracking)
+- Tile b: NetworkCard (network information)
+- Tile c: SummaryCard (overview information)
+- Tile d: ResourceCard (usage statistics)
+- Tile e: BillingCard (billing history)
+- Tile f: AIProfileCard (AI-generated user insights)
 
 ### Styling & Theme System
 
@@ -104,3 +115,24 @@ Each tab has specific grid item positions defined in `layout.helper.ts`:
 - Theme flash prevention requires inline script in HTML
 - Light mode requires comprehensive CSS overrides for text colors and backgrounds
 - Glass effects are simplified in light mode for better aesthetics
+
+## AI Integration
+
+**AI Profile Generation:**
+- Uses DeepSeek AI model (`deepseek-r1-671b-0414`) for user profile analysis
+- Analyzes user behavior patterns, location data, usage statistics, and billing history
+- Generates intelligent insights about user preferences and consumption patterns
+- Real-time profile generation with loading states and error handling
+- API endpoint: `https://10.0.62.161:5443/open/router/v1/chat/completions`
+
+**AI Service Features:**
+- Combines data from all user cards (location, network, resource, billing)
+- Generates concise user profiles (150 characters max)
+- Analyzes usage patterns, mobility behavior, and spending habits
+- Provides actionable insights for customer service and marketing
+
+**Timeline Component:**
+- Based on shadcn/ui design principles with custom theming
+- Supports multiple theme colors (blue, emerald, orange, cyan, violet)
+- Responsive timeline with icons, dates, and descriptions
+- Used in LocationCard for displaying location history

@@ -23,8 +23,6 @@ interface TimelineItemProps {
 
 const Timeline: React.FC<TimelineProps> = ({ 
   children, 
-  size = 'md', 
-  iconSize = 'md', 
   className 
 }) => {
   return (
@@ -39,9 +37,6 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   title,
   description,
   icon,
-  iconColor = 'primary',
-  status = 'completed',
-  loading = false,
   error,
   isLast = false,
   themeColor = 'blue'

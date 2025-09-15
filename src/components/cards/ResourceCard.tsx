@@ -1,4 +1,6 @@
 import { ResourceData } from "../../types/customer";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faSignal, faExclamationTriangle, faBan, faRocket } from '@fortawesome/free-solid-svg-icons';
 
 interface ResourceCardProps {
   data: ResourceData;
@@ -40,7 +42,7 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
               </div>
             )}
             <div className="flex items-center bg-cyan-500/20 text-cyan-100 px-3 py-1.5 rounded-full text-xs border border-cyan-400/30 shadow-sm backdrop-blur-sm">
-              <span className="mr-1.5">🕒</span>
+              <FontAwesomeIcon icon={faClock} className="mr-1.5" />
               <span className="text-cyan-100/90 font-mono mr-2">
                 {new Date(new Date().getTime() - 8 * 60000).toLocaleTimeString(
                   "zh-CN",
@@ -64,7 +66,8 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
           <div className="pb-4 border-b border-cyan-400/20">
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
-                📶 <span className="ml-2">数据流量</span>
+                <FontAwesomeIcon icon={faSignal} className="mr-2" />
+                数据流量
               </span>
               <div className="text-right">
                 <div className="text-sm font-extrabold text-white drop-shadow-sm">
@@ -88,7 +91,8 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
             </div>
             {data.isDataOverLimit && (
               <div className="text-xs text-red-300 bg-red-500/10 px-2 py-1 rounded mt-2">
-                ⚠️ 超出 {(data.dataUsed - data.dataTotal).toFixed(2)}GB
+                <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
+                超出 {(data.dataUsed - data.dataTotal).toFixed(2)}GB
               </div>
             )}
           </div>
@@ -102,11 +106,11 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
               <span
                 className={`text-sm font-semibold px-4 py-2 rounded-full border-2 ${getSpeedLimitColor(data.speedLimit)}`}
               >
-                {data.speedLimit === "0速"
-                  ? "⛔ 0速"
-                  : data.speedLimit === "限速"
-                    ? "🐌 限速"
-                    : "🚀 正常"}
+                <FontAwesomeIcon 
+                  icon={data.speedLimit === "0速" ? faBan : data.speedLimit === "限速" ? faClock : faRocket} 
+                  className="mr-2" 
+                />
+                {data.speedLimit === "0速" ? "0速" : data.speedLimit === "限速" ? "限速" : "正常"}
               </span>
             </div>
           </div>

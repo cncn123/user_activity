@@ -8,6 +8,17 @@ import {
   Tooltip,
 } from "recharts";
 import { useTheme } from "../../hooks/useTheme";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+  faCheckCircle,
+  faExclamationCircle,
+  faExclamationTriangle,
+  faArrowUp,
+  faArrowDown,
+  faArrowRight,
+  faChartLine,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface BillingCardProps {
   data: BillingData;
@@ -35,9 +46,9 @@ export const BillingCard = ({ data }: BillingCardProps) => {
   };
 
   const getComparisonIcon = (value: number) => {
-    if (value > 0) return "📈";
-    if (value < 0) return "📉";
-    return "➡️";
+    if (value > 0) return faArrowUp;
+    if (value < 0) return faArrowDown;
+    return faArrowRight;
   };
 
   return (
@@ -50,7 +61,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
           </h3>
         </div>
         <div className="flex items-center bg-orange-500/20 text-orange-100 px-3 py-1.5 rounded-full text-xs border border-orange-400/30 shadow-sm backdrop-blur-sm">
-          <span className="mr-1.5">🕒</span>
+          <FontAwesomeIcon icon={faClock} className="mr-1.5" />
           <span className="text-orange-100/90 font-mono mr-2">
             {new Date(new Date().getTime() - 3 * 60 * 60000).toLocaleTimeString(
               "zh-CN",
@@ -74,11 +85,21 @@ export const BillingCard = ({ data }: BillingCardProps) => {
             <span
               className={`text-xs font-semibold px-3 py-1 rounded-full border shadow-sm ${getStatusColor(data.currentMonth.status)}`}
             >
+              <FontAwesomeIcon
+                icon={
+                  data.currentMonth.status === "已缴费"
+                    ? faCheckCircle
+                    : data.currentMonth.status === "未缴费"
+                      ? faExclamationCircle
+                      : faExclamationTriangle
+                }
+                className="mr-2"
+              />
               {data.currentMonth.status === "已缴费"
-                ? "✅ 已缴费"
+                ? "已缴费"
                 : data.currentMonth.status === "未缴费"
-                  ? "⏰ 未缴费"
-                  : "⚠️ 逾期"}
+                  ? "未缴费"
+                  : "逾期"}
             </span>
           </div>
           <div className="text-xs text-white/60 mt-2">
@@ -96,9 +117,12 @@ export const BillingCard = ({ data }: BillingCardProps) => {
               <div
                 className={`text-lg font-extrabold flex items-center justify-center ${getComparisonColor(data.monthlyComparison.currentVsPrevious)}`}
               >
-                <span className="mr-1">
-                  {getComparisonIcon(data.monthlyComparison.currentVsPrevious)}
-                </span>
+                <FontAwesomeIcon
+                  icon={getComparisonIcon(
+                    data.monthlyComparison.currentVsPrevious,
+                  )}
+                  className="mr-1"
+                />
                 {Math.abs(data.monthlyComparison.currentVsPrevious)}%
               </div>
             </div>
@@ -109,11 +133,12 @@ export const BillingCard = ({ data }: BillingCardProps) => {
               <div
                 className={`text-lg font-extrabold flex items-center justify-center ${getComparisonColor(data.monthlyComparison.currentVsSameLastYear)}`}
               >
-                <span className="mr-1">
-                  {getComparisonIcon(
+                <FontAwesomeIcon
+                  icon={getComparisonIcon(
                     data.monthlyComparison.currentVsSameLastYear,
                   )}
-                </span>
+                  className="mr-1"
+                />
                 {Math.abs(data.monthlyComparison.currentVsSameLastYear)}%
               </div>
             </div>
@@ -124,7 +149,8 @@ export const BillingCard = ({ data }: BillingCardProps) => {
         <div className="pt-4">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
-              📊 <span className="ml-1">12个月趋势</span>
+              <FontAwesomeIcon icon={faChartLine} className="mr-2" />
+              12个月趋势
             </span>
             <span className="text-xs text-orange-100 font-semibold bg-orange-500/20 px-3 py-1 rounded border border-orange-400/30 shadow-sm">
               总额 ${data.totalAmount12Months}
@@ -166,9 +192,23 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                         ? "rgba(31,41,55,0.7)"
                         : "rgba(255,255,255,0.7)",
                   }}
-                  tickFormatter={(value) => value.slice(-2)}
+                  tickFormatter={(value) => {
+                    const month = value.split("/")[1] || value.slice(-2);
+                    return `${month}`;
+                  }}
                 />
-                <YAxis hide />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{
+                    fontSize: 10,
+                    fill:
+                      theme === "light"
+                        ? "rgba(31,41,55,0.7)"
+                        : "rgba(255,255,255,0.7)",
+                  }}
+                  tickFormatter={(value) => `$${value}`}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor:
