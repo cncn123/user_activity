@@ -13,9 +13,9 @@ interface AIRequest {
 
 
 const AI_CONFIG = {
-  baseURL: import.meta.env.VITE_AI_API_BASE_URL || '/api/open/router/v1/chat/completions',
-  apiKey: import.meta.env.VITE_AI_API_KEY || 'ME-sk-4MqV2D/E45rOP2U8/G7bvQ==-X0SPG60S1jduKeDpUWMaQVyJofVHR1IZ',
-  model: import.meta.env.VITE_AI_MODEL || 'deepseek-r1-671b-0414'
+  baseURL: '/api/open/router/v1/chat/completions',
+  apiKey: 'ME-sk-4MqV2D/E45rOP2U8/G7bvQ==-X0SPG60S1jduKeDpUWMaQVyJofVHR1IZ',
+  model: 'deepseek-r1-671b-0414'
 };
 
 export class AIService {

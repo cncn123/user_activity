@@ -1,0 +1,106 @@
+/* Optimized theme color overrides using CSS variables */
+
+/* Light mode text color overrides */
+[data-theme="light"] .text-white {
+  color: var(--text-light) !important;
+}
+
+[data-theme="light"] .text-white\/90 {
+  color: rgba(31, 41, 55, 0.9) !important;
+}
+
+[data-theme="light"] .text-white\/80 {
+  color: rgba(31, 41, 55, 0.8) !important;
+}
+
+[data-theme="light"] .text-white\/70 {
+  color: rgba(31, 41, 55, 0.7) !important;
+}
+
+[data-theme="light"] .text-white\/60 {
+  color: rgba(31, 41, 55, 0.6) !important;
+}
+
+/* Theme-specific color mappings */
+[data-theme="light"] .text-blue-100,
+[data-theme="light"] .text-blue-200,
+[data-theme="light"] .text-blue-300 {
+  color: var(--blue-secondary) !important;
+}
+
+[data-theme="light"] .text-emerald-100,
+[data-theme="light"] .text-emerald-200,
+[data-theme="light"] .text-emerald-300 {
+  color: var(--emerald-secondary) !important;
+}
+
+[data-theme="light"] .text-orange-100,
+[data-theme="light"] .text-orange-200,
+[data-theme="light"] .text-orange-300 {
+  color: var(--orange-secondary) !important;
+}
+
+[data-theme="light"] .text-cyan-100,
+[data-theme="light"] .text-cyan-200,
+[data-theme="light"] .text-cyan-300 {
+  color: var(--cyan-secondary) !important;
+}
+
+[data-theme="light"] .text-violet-100,
+[data-theme="light"] .text-violet-200,
+[data-theme="light"] .text-violet-300,
+[data-theme="light"] .text-purple-100,
+[data-theme="light"] .text-purple-200,
+[data-theme="light"] .text-purple-300 {
+  color: var(--violet-secondary) !important;
+}
+
+/* Background color overrides */
+[data-theme="light"] .bg-blue-200,
+[data-theme="light"] .bg-blue-300 {
+  background-color: var(--blue-secondary) !important;
+}
+
+[data-theme="light"] .bg-emerald-200,
+[data-theme="light"] .bg-emerald-300,
+[data-theme="light"] .bg-green-300 {
+  background-color: var(--emerald-secondary) !important;
+}
+
+[data-theme="light"] .bg-orange-200,
+[data-theme="light"] .bg-orange-300 {
+  background-color: var(--orange-secondary) !important;
+}
+
+[data-theme="light"] .bg-cyan-200,
+[data-theme="light"] .bg-cyan-300 {
+  background-color: var(--cyan-secondary) !important;
+}
+
+[data-theme="light"] .bg-violet-200,
+[data-theme="light"] .bg-violet-300,
+[data-theme="light"] .bg-purple-300 {
+  background-color: var(--violet-secondary) !important;
+}
+
+/* Border color overrides */
+[data-theme="light"] .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Background overlay overrides */
+[data-theme="light"] .bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .bg-white\/15 {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}

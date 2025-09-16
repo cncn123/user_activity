@@ -4,30 +4,30 @@ import Navbar from "./components/navbar";
 import { useTheme } from "./hooks/useTheme";
 import { TabKey, UserKey } from "./types";
 
-// 常量配置
-const NAVBAR_CONSTANTS = {
-  BASE_X: 520,
-  BASE_W: 221.5,
-  TAB_OFFSETS: {
-    可知可感: 0,
-    可享: 1,
-    可及: 2,
-  } as const
-};
-
 function App() {
   const [tab, setTab] = useState<TabKey>(TabKey.kejikegan);
   const [selectedUser, setSelectedUser] = useState<UserKey>(UserKey.user1);
   const { theme, toggleTheme } = useTheme();
 
-  const x = NAVBAR_CONSTANTS.BASE_X + NAVBAR_CONSTANTS.TAB_OFFSETS[tab];
-  const w = NAVBAR_CONSTANTS.BASE_W;
+  const tabOffsets: { [key in TabKey]: number } = {
+    可知可感: 0,
+    可享: 1,
+    可及: 2,
+  };
+
+  const baseX = 520;
+  const baseW = 221.5;
+
+  const x = baseX + tabOffsets[tab];
+  const w = baseW;
 
   return (
     <main className="relative">
       <Navbar
         tab={tab}
         setTab={setTab}
+        left={x}
+        sliderWidth={w}
         theme={theme}
         onThemeToggle={toggleTheme}
       />

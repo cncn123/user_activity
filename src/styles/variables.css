@@ -1,0 +1,56 @@
+/* CSS Variables for theme consistency */
+:root {
+  /* Base colors */
+  --bg-light: #f8fafc;
+  --bg-dark: #0f172a;
+  --text-light: #1f2937;
+  --text-dark: #ffffff;
+  
+  /* Glass morphism variables */
+  --glass-bg-opacity: 0.15;
+  --glass-border-opacity: 0.25;
+  --glass-blur: 25px;
+  --glass-saturation: 1.8;
+  
+  /* Animation variables */
+  --transition-fast: 100ms;
+  --transition-normal: 400ms;
+  --transition-slow: 600ms;
+  --ease-curve: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Shadow variables */
+  --shadow-light: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.05);
+  --shadow-heavy: 0 25px 70px rgba(0, 0, 0, 0.25), 0 12px 35px rgba(0, 0, 0, 0.15);
+  
+  /* Theme colors */
+  --blue-primary: #3b82f6;
+  --blue-secondary: #1e40af;
+  --emerald-primary: #10b981;
+  --emerald-secondary: #059669;
+  --orange-primary: #f97316;
+  --orange-secondary: #ea580c;
+  --cyan-primary: #06b6d4;
+  --cyan-secondary: #0891b2;
+  --violet-primary: #8b5cf6;
+  --violet-secondary: #7c3aed;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --current-bg: var(--bg-dark);
+  --current-text: var(--text-dark);
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, var(--glass-bg-opacity)) 0%, rgba(255, 255, 255, 0.05) 100%);
+  --glass-border: rgba(255, 255, 255, var(--glass-border-opacity));
+  --shadow-current: var(--shadow-heavy);
+}
+
+/* Light theme overrides */
+[data-theme="light"] {
+  --current-bg: var(--bg-light);
+  --current-text: var(--text-light);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --shadow-current: var(--shadow-light);
+  --glass-saturation: 1.4;
+}

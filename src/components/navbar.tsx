@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { TabKey } from "../App";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { TabKey } from "../types";
 import { Theme } from "../hooks/useTheme";
 
 export interface NavbarProps {
   tab: TabKey;
   setTab: React.Dispatch<React.SetStateAction<TabKey>>;
-  left: number;
-  sliderWidth: number;
   theme: Theme;
   onThemeToggle: () => void;
 }
@@ -17,16 +15,16 @@ const Navbar: React.FC<NavbarProps> = ({
   theme,
   onThemeToggle,
 }) => {
-  const tabs = [
-    { key: TabKey.kejikegan, label: "可知可感" },
-    { key: TabKey.kexiang, label: "可享" },
-    { key: TabKey.keji, label: "可及" },
-  ];
+  const tabs = useMemo(() => [
+  { key: TabKey.kejikegan, label: "可知可感" },
+  { key: TabKey.kexiang, label: "可享" },
+  { key: TabKey.keji, label: "可及" },
+], []);
 
   const [sliderStyle, setSliderStyle] = useState({ left: 0, width: 0 });
   const tabRefs = useRef<HTMLDivElement[]>([]); // Array of refs for each tab
 
-  const updateSliderStyle = () => {
+  const updateSliderStyle = useCallback(() => {
     const activeTabIndex = tabs.findIndex((t) => t.key === tab);
     const activeTabRef = tabRefs.current[activeTabIndex];
 
@@ -37,18 +35,19 @@ const Navbar: React.FC<NavbarProps> = ({
         width: offsetWidth,
       });
     }
-  };
+  }, [tab, tabs]);
 
   useEffect(() => {
-    window.addEventListener("resize", updateSliderStyle); // Add resize listener
+    const handleResize = () => updateSliderStyle();
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", updateSliderStyle); // Clean up listener
+      window.removeEventListener("resize", handleResize);
     };
-  }, [tab]); // Recalculate whenever the active tab changes
+  }, [updateSliderStyle]);
 
   useEffect(() => {
-    updateSliderStyle(); // Initial slider style update
-  }, [tab]);
+    updateSliderStyle();
+  }, [tab, updateSliderStyle]);
 
   return (
     <div

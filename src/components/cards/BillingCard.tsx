@@ -160,7 +160,10 @@ export const BillingCard = ({ data }: BillingCardProps) => {
           {/* 趋势图 */}
           <div className="relative h-32 bg-orange-500/5 rounded-lg p-2 mb-3 border border-orange-400/20 shadow-inner">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data.last12Months}>
+              <LineChart
+                data={data.last12Months}
+                margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+              >
                 <defs>
                   <linearGradient
                     id="colorGradient"
@@ -183,8 +186,8 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                 </defs>
                 <XAxis
                   dataKey="month"
-                  axisLine={false}
-                  tickLine={false}
+                  axisLine={true}
+                  tickLine={true}
                   tick={{
                     fontSize: 10,
                     fill:
@@ -198,8 +201,8 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                   }}
                 />
                 <YAxis
-                  axisLine={false}
-                  tickLine={false}
+                  axisLine={true}
+                  tickLine={true}
                   tick={{
                     fontSize: 10,
                     fill:
@@ -208,6 +211,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                         : "rgba(255,255,255,0.7)",
                   }}
                   tickFormatter={(value) => `$${value}`}
+                  width={30}
                 />
                 <Tooltip
                   contentStyle={{
@@ -226,7 +230,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                       theme === "light" ? "0 4px 12px rgba(0,0,0,0.1)" : "none",
                   }}
                   formatter={(value: number) => [
-                    `${value.toFixed(2)}`,
+                    `$${value.toFixed(2)}`,
                     "账单金额",
                   ]}
                   labelStyle={{
@@ -260,13 +264,13 @@ export const BillingCard = ({ data }: BillingCardProps) => {
             <div className="text-center">
               <div className="text-xs text-white/80 font-medium">月均消费</div>
               <div className="text-lg font-extrabold text-white drop-shadow-sm">
-                ¥{data.averageMonthlyAmount}
+                ${data.averageMonthlyAmount.toFixed(2)}
               </div>
             </div>
             <div className="text-center">
               <div className="text-xs text-white/80 font-medium">最高月份</div>
               <div className="text-lg font-extrabold text-white drop-shadow-sm">
-                ¥
+                $
                 {Math.max(...data.last12Months.map((m) => m.amount)).toFixed(2)}
               </div>
             </div>
