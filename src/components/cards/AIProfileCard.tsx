@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AIService from "../../services/aiService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -115,35 +115,6 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   const [profile, setProfile] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [displayedProfile, setDisplayedProfile] = useState<string>(""); // 用于逐字显示的状态
-
-  // 逐字显示效果
-  useEffect(() => {
-    if (!profile) {
-      setDisplayedProfile("");
-      return;
-    }
-
-    // 如果已经有完整内容且没有在加载，则直接显示完整内容
-    if (profile && !loading) {
-      setDisplayedProfile(profile);
-      return;
-    }
-
-    let index = 0;
-    setDisplayedProfile(""); // 重置显示内容
-    
-    const timer = setInterval(() => {
-      if (index < profile.length) {
-        setDisplayedProfile(prev => prev + profile.charAt(index));
-        index++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 20); // 每20毫秒显示一个字符
-
-    return () => clearInterval(timer);
-  }, [profile, loading]);
 
   // 调试：打印接收到的用户数据
   console.log("AIProfileCard 接收到的 userData:", userData);
@@ -255,12 +226,12 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                   </button>
                 </div>
               </div>
-            ) : displayedProfile ? (
+            ) : profile ? (
               <div className="space-y-4">
                 {/* 改进的AI响应显示 - 区分思考过程和最终回答 */}
                 <div className="max-w-none">
                   <div className="text-white/90 text-sm leading-relaxed font-sans">
-                    {formatAIResponse(displayedProfile)}
+                    {formatAIResponse(profile)}
                     {loading && (
                       <div className="flex items-center mt-3 text-violet-300">
                         <span className="inline-block w-2 h-4 bg-violet-400 animate-pulse mr-2"></span>
