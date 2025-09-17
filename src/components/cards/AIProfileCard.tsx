@@ -15,51 +15,59 @@ interface AIProfileCardProps {
 // AI响应格式化函数
 const formatAIResponse = (text: string): React.ReactNode => {
   // 提取思考内容和最终回答
-  const extractThinkContent = (content: string): { thinking: string[], finalAnswer: string } => {
+  const extractThinkContent = (
+    content: string,
+  ): { thinking: string[]; finalAnswer: string } => {
     // 使用正确的正则表达式匹配思考内容
     const thinkMatches = content.match(/<think>([\s\S]*?)<\/think>/gi) || [];
-    const thinking = thinkMatches.map(match => 
-      match.replace(/<\/?think>/gi, '').trim()
-    ).filter(t => t);
-    
+    const thinking = thinkMatches
+      .map((match) => match.replace(/<\/?think>/gi, "").trim())
+      .filter((t) => t);
+
     // 移除所有 <think> 标签及其内容，获取最终回答
-    const finalAnswer = content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-    
+    const finalAnswer = content
+      .replace(/<think>[\s\S]*?<\/think>/gi, "")
+      .trim();
+
     return { thinking, finalAnswer };
   };
 
   const { thinking, finalAnswer } = extractThinkContent(text);
-  const lines = finalAnswer.split('\n').filter(line => line.trim());
-  
+  const lines = finalAnswer.split("\n").filter((line) => line.trim());
+
   const formatLines = lines.map((line, index) => {
     // 检测标题模式
-    if (line.match(/^[#*•▪▪◦›➢➤⦿]\s+/) || line.match(/^【.*】/) || line.match(/^[A-Za-z\d]+\.\s/)) {
+    if (
+      line.match(/^[#*•▪▪◦›➢➤⦿]\s+/) ||
+      line.match(/^【.*】/) ||
+      line.match(/^[A-Za-z\d]+\.\s/)
+    ) {
       return (
         <div key={index} className="mb-2">
           <span className="font-semibold text-violet-300 bg-violet-500/10 px-2 py-1 rounded-lg border border-violet-400/20 inline-block">
-            {line.replace(/^[#*•▪▪◦›➢➤⦿]\s+/, '').replace(/^【(.*)】/, '$1')}
+            {line.replace(/^[#*•▪▪◦›➢➤⦿]\s+/, "").replace(/^【(.*)】/, "$1")}
           </span>
         </div>
       );
     }
-    
+
     // 检测关键信息模式（包含冒号）
-    if (line.includes('：') || line.includes(':')) {
+    if (line.includes("：") || line.includes(":")) {
       const parts = line.split(/[：:]/);
       if (parts.length >= 2) {
         return (
           <div key={index} className="mb-2 flex items-start">
-            <span className="font-medium text-amber-300 min-w-[80px] mr-2">
+            <span className="font-medium text-violet-300 min-w-[80px] mr-2">
               {parts[0]}：
             </span>
             <span className="text-white/90 flex-1">
-              {parts.slice(1).join(':')}
+              {parts.slice(1).join(":")}
             </span>
           </div>
         );
       }
     }
-    
+
     // 普通段落
     return (
       <div key={index} className="mb-3 text-white/80 leading-6">
@@ -75,16 +83,21 @@ const formatAIResponse = (text: string): React.ReactNode => {
       {thinking.length > 0 && (
         <div className="bg-violet-500/5 border border-violet-400/20 rounded-xl p-4">
           <div className="flex items-center mb-3">
-            <FontAwesomeIcon 
-              icon={faRobot} 
-              className="text-violet-400 mr-2 text-sm" 
+            <FontAwesomeIcon
+              icon={faRobot}
+              className="text-violet-400 mr-2 text-sm"
             />
-            <span className="text-violet-300 text-sm font-medium">AI 思考过程</span>
+            <span className="text-violet-300 text-sm font-medium">
+              AI 思考过程
+            </span>
             <div className="flex-1 ml-3 h-px bg-gradient-to-r from-violet-400/30 to-transparent"></div>
           </div>
           <div className="space-y-2">
             {thinking.map((thinkContent, index) => (
-              <div key={index} className="text-violet-100/90 text-xs leading-relaxed bg-violet-500/10 rounded-lg p-3 border-l-2 border-violet-400/40">
+              <div
+                key={index}
+                className="text-violet-100/90 text-xs leading-relaxed bg-violet-500/10 rounded-lg p-3 border-l-2 border-violet-400/40"
+              >
                 <div className="whitespace-pre-wrap font-mono">
                   {thinkContent}
                 </div>
@@ -99,12 +112,12 @@ const formatAIResponse = (text: string): React.ReactNode => {
         <div className="bg-white/5 border border-violet-400/20 rounded-xl p-4">
           <div className="flex items-center mb-3">
             <div className="w-2 h-2 bg-violet-400 rounded-full mr-2 animate-pulse"></div>
-            <span className="text-violet-300 text-sm font-medium">分析结果</span>
+            <span className="text-violet-300 text-sm font-medium">
+              分析结果
+            </span>
             <div className="flex-1 ml-3 h-px bg-gradient-to-r from-violet-400/30 to-transparent"></div>
           </div>
-          <div className="space-y-2">
-            {formatLines}
-          </div>
+          <div className="space-y-2">{formatLines}</div>
         </div>
       )}
     </div>
@@ -126,7 +139,6 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
     setLoading(true);
     setError("");
     setProfile(""); // 清空之前的内容
-    setDisplayedProfile(""); // 清空显示内容
 
     try {
       console.log("开始调用 AI 服务...");
@@ -151,7 +163,6 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
 
   const handleRefresh = () => {
     setProfile("");
-    setDisplayedProfile("");
     setError("");
     generateProfile();
   };
@@ -173,29 +184,37 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                   minute: "2-digit",
                 })}
               </span>
-              <span className="text-xs font-medium">
-                · AI 分析
-              </span>
+              <span className="text-xs font-medium">· DeepSeek 分析</span>
             </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleRefresh();
-              }}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-              }}
-              disabled={loading}
-              className="p-2 rounded-full bg-violet-500/20 hover:bg-violet-500/30 border border-violet-400/30 transition-colors disabled:opacity-50"
-              title="重新生成"
-              style={{ pointerEvents: "auto" }}
-            >
-              <FontAwesomeIcon
-                icon={faRotate}
-                className={`text-sm ${loading ? "animate-spin" : ""}`}
-              />
-            </button>
+            <div className="relative group">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleRefresh();
+                }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                }}
+                disabled={loading}
+                className="p-2 rounded-full bg-violet-500/20 hover:bg-violet-500/30 border border-violet-400/30 transition-all duration-300 disabled:opacity-50 group-hover:shadow-lg group-hover:scale-110"
+                title="重新生成"
+                style={{ pointerEvents: "auto" }}
+              >
+                <FontAwesomeIcon
+                  icon={faRotate}
+                  className={`text-sm text-violet-400 ${loading ? "animate-spin" : ""}`}
+                />
+              </button>
+              {/* 悬停提示 */}
+              <div className="absolute right-0 top-full mt-2 hidden group-hover:block bg-violet-600/90 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap backdrop-blur-sm z-50">
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faRotate} className="mr-2 text-violet-200" />
+                  重新生成
+                </div>
+                <div className="absolute -top-1.5 right-3 w-3 h-3 bg-violet-600/90 rotate-45"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -245,20 +264,12 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                 <div className="pt-4 border-t border-violet-400/20">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="bg-gradient-to-r from-violet-600/30 to-purple-600/30 text-violet-200 px-3 py-1.5 rounded-full text-xs font-medium border border-violet-400/40 flex items-center">
-                        <FontAwesomeIcon icon={faRobot} className="mr-1.5 text-violet-300" />
-                        <span className="text-violet-100">DeepSeek AI</span>
-                        <span className="w-1.5 h-1.5 bg-violet-400 rounded-full ml-2 animate-pulse"></span>
-                      </span>
                       {loading && (
                         <span className="text-violet-300 text-xs font-medium bg-violet-500/20 px-2 py-1 rounded-full border border-violet-400/30">
                           生成中...
                         </span>
                       )}
                     </div>
-                    <span className="text-white/60 text-xs">
-                      {new Date().toLocaleDateString("zh-CN")}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -288,7 +299,6 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      console.log("按钮被点击了！");
                       generateProfile();
                     }}
                     onMouseDown={(e) => {
