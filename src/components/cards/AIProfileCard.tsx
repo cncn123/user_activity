@@ -124,6 +124,12 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
       return;
     }
 
+    // 如果已经有完整内容且没有在加载，则直接显示完整内容
+    if (profile && !loading) {
+      setDisplayedProfile(profile);
+      return;
+    }
+
     let index = 0;
     setDisplayedProfile(""); // 重置显示内容
     
@@ -137,7 +143,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
     }, 20); // 每20毫秒显示一个字符
 
     return () => clearInterval(timer);
-  }, [profile]);
+  }, [profile, loading]);
 
   // 调试：打印接收到的用户数据
   console.log("AIProfileCard 接收到的 userData:", userData);
