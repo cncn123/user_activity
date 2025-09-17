@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AIService from "../../services/aiService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,6 +16,7 @@ interface AIProfileCardProps {
 const formatAIResponse = (text: string): React.ReactNode => {
   // 提取思考内容和最终回答
   const extractThinkContent = (content: string): { thinking: string[], finalAnswer: string } => {
+    // 使用正确的正则表达式匹配思考内容
     const thinkMatches = content.match(/<think>([\s\S]*?)<\/think>/gi) || [];
     const thinking = thinkMatches.map(match => 
       match.replace(/<\/?think>/gi, '').trim()
@@ -114,6 +115,29 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   const [profile, setProfile] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [displayedProfile, setDisplayedProfile] = useState<string>(""); // 用于逐字显示的状态
+
+  // 逐字显示效果
+  useEffect(() => {
+    if (!profile) {
+      setDisplayedProfile("");
+      return;
+    }
+
+    let index = 0;
+    setDisplayedProfile(""); // 重置显示内容
+    
+    const timer = setInterval(() => {
+      if (index < profile.length) {
+        setDisplayedProfile(prev => prev + profile.charAt(index));
+        index++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 20); // 每20毫秒显示一个字符
+
+    return () => clearInterval(timer);
+  }, [profile]);
 
   // 调试：打印接收到的用户数据
   console.log("AIProfileCard 接收到的 userData:", userData);
@@ -125,6 +149,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
     setLoading(true);
     setError("");
     setProfile(""); // 清空之前的内容
+    setDisplayedProfile(""); // 清空显示内容
 
     try {
       console.log("开始调用 AI 服务...");
@@ -149,6 +174,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
 
   const handleRefresh = () => {
     setProfile("");
+    setDisplayedProfile("");
     setError("");
     generateProfile();
   };
@@ -159,18 +185,18 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
         <div className="flex items-center justify-between mb-4 flex-shrink-0">
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
             <span className="w-3 h-3 bg-violet-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
-            AI 用户画像
+            <span className="text-white">AI 用户画像</span>
           </h3>
           <div className="flex items-center space-x-2">
             <div className="flex items-center bg-violet-500/20 text-violet-100 px-3 py-1.5 rounded-full text-xs border border-violet-400/30 shadow-sm backdrop-blur-sm">
               <FontAwesomeIcon icon={faRobot} className="mr-1.5" />
-              <span className="text-violet-100/90 font-mono mr-2">
+              <span className="font-mono mr-2">
                 {new Date().toLocaleTimeString("zh-CN", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
               </span>
-              <span className="text-white/80 text-xs font-medium">
+              <span className="text-xs font-medium">
                 · AI 分析
               </span>
             </div>
@@ -223,12 +249,12 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                   </button>
                 </div>
               </div>
-            ) : profile ? (
+            ) : displayedProfile ? (
               <div className="space-y-4">
                 {/* 改进的AI响应显示 - 区分思考过程和最终回答 */}
                 <div className="max-w-none">
                   <div className="text-white/90 text-sm leading-relaxed font-sans">
-                    {formatAIResponse(profile)}
+                    {formatAIResponse(displayedProfile)}
                     {loading && (
                       <div className="flex items-center mt-3 text-violet-300">
                         <span className="inline-block w-2 h-4 bg-violet-400 animate-pulse mr-2"></span>

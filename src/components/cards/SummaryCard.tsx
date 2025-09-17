@@ -44,7 +44,7 @@ export const SummaryCard = ({ data }: SummaryCardProps) => {
           </h3>
           <div className="flex items-center bg-violet-500/20 text-violet-100 px-3 py-1.5 rounded-full text-xs border border-violet-400/30 shadow-sm backdrop-blur-sm">
             <FontAwesomeIcon icon={faClock} className="mr-1.5" />
-            <span className="text-violet-100/90 font-mono mr-2">
+            <span className="font-mono mr-2">
               {new Date(
                 new Date(data.timestamp).getTime() - 45 * 60000,
               ).toLocaleTimeString("zh-CN", {
@@ -52,7 +52,7 @@ export const SummaryCard = ({ data }: SummaryCardProps) => {
                 minute: "2-digit",
               })}
             </span>
-            <span className="text-white/80 text-xs font-medium">· 30分钟</span>
+            <span className="text-xs font-medium">· 实时</span>
           </div>
         </div>
         <div className="space-y-4">

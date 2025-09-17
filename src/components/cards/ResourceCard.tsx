@@ -43,13 +43,13 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
             )}
             <div className="flex items-center bg-cyan-500/20 text-cyan-100 px-3 py-1.5 rounded-full text-xs border border-cyan-400/30 shadow-sm backdrop-blur-sm">
               <FontAwesomeIcon icon={faClock} className="mr-1.5" />
-              <span className="text-cyan-100/90 font-mono mr-2">
+              <span className="font-mono mr-2">
                 {new Date(new Date().getTime() - 8 * 60000).toLocaleTimeString(
                   "zh-CN",
                   { hour: "2-digit", minute: "2-digit" },
                 )}
               </span>
-              <span className="text-white/80 text-xs font-medium">· 5分钟</span>
+              <span className="text-xs font-medium">· 实时</span>
             </div>
           </div>
         </div>

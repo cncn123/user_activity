@@ -62,13 +62,13 @@ export const BillingCard = ({ data }: BillingCardProps) => {
         </div>
         <div className="flex items-center bg-orange-500/20 text-orange-100 px-3 py-1.5 rounded-full text-xs border border-orange-400/30 shadow-sm backdrop-blur-sm">
           <FontAwesomeIcon icon={faClock} className="mr-1.5" />
-          <span className="text-orange-100/90 font-mono mr-2">
+          <span className="font-mono mr-2">
             {new Date(new Date().getTime() - 3 * 60 * 60000).toLocaleTimeString(
               "zh-CN",
               { hour: "2-digit", minute: "2-digit" },
             )}
           </span>
-          <span className="text-white/80 text-xs font-medium">· 每日</span>
+          <span className="text-xs font-medium">· 每日</span>
         </div>
       </div>
 

@@ -43,7 +43,7 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
           </h3>
           <div className="flex items-center bg-emerald-500/20 text-emerald-100 px-3 py-1.5 rounded-full text-xs border border-emerald-400/30 shadow-sm backdrop-blur-sm">
             <FontAwesomeIcon icon={faClock} className="mr-1.5" />
-            <span className="text-emerald-100/90 font-mono mr-2">
+            <span className="font-mono mr-2">
               {new Date(
                 new Date(data.timestamp).getTime() - 15 * 60000,
               ).toLocaleTimeString("zh-CN", {
@@ -51,7 +51,7 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
                 minute: "2-digit",
               })}
             </span>
-            <span className="text-white/80 text-xs font-medium">· 15分钟</span>
+            <span className="text-xs font-medium">· 实时</span>
           </div>
         </div>
 
