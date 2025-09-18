@@ -19,9 +19,52 @@ const AI_CONFIG = {
 };
 
 export class AIService {
+  static async generateUserProfileStream(userData: any): Promise<Response> {
+    console.log('AIService.generateUserProfileStream 被调用');
+    
+    const prompt = this.buildUserProfilePrompt(userData);
+    
+    const requestData: AIRequest = {
+      model: AI_CONFIG.model,
+      stream: true,
+      messages: [
+        {
+          role: 'system',
+          content: '你是一个专业的用户行为分析师，擅长根据用户的位置、网络、资源使用和账单数据来生成准确的用户画像。请用简洁专业的语言描述用户特征，控制在150字以内。'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      max_tokens: 500,
+      temperature: 0.7
+    };
+
+    const response = await fetch(AI_CONFIG.baseURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${AI_CONFIG.apiKey}`,
+        'Accept': 'text/event-stream',
+        'Cache-Control': 'no-cache'
+      },
+      body: JSON.stringify(requestData),
+      mode: 'cors',
+      credentials: 'omit'
+    });
+
+    if (!response.ok) {
+      throw new Error(`AI API 请求失败: ${response.status}`);
+    }
+
+    return response;
+  }
+
   static async generateUserProfile(
     userData: any, 
-    onProgress?: (chunk: string) => void
+    onProgress?: (chunk: string) => void,
+    bufferSize: number = 3 // 预加载缓冲区大小
   ): Promise<string> {
     console.log('AIService.generateUserProfile 被调用');
     console.log('接收到的用户数据:', userData);
@@ -95,6 +138,38 @@ export class AIService {
       const decoder = new TextDecoder();
       let fullResponse = '';
       let buffer = '';
+      let chunkBuffer: string[] = []; // 预加载缓冲区
+      let isProcessingBuffer = false;
+
+      // 处理预加载缓冲区
+      const processChunkBuffer = () => {
+        if (chunkBuffer.length > 0 && !isProcessingBuffer) {
+          isProcessingBuffer = true;
+          
+          const processNextChunk = () => {
+            if (chunkBuffer.length > 0) {
+              const chunk = chunkBuffer.shift()!;
+              fullResponse += chunk;
+              
+              // 调用进度回调 - 将内容拆分为单个字符逐个传递
+              if (onProgress) {
+                // 将 chunk 按字符拆分，实现匀速输出
+                const characters = chunk.split('');
+                characters.forEach(char => {
+                  onProgress(char);
+                });
+              }
+              
+              // 继续处理下一个 chunk
+              setTimeout(processNextChunk, 10);
+            } else {
+              isProcessingBuffer = false;
+            }
+          };
+          
+          processNextChunk();
+        }
+      };
 
       try {
         // eslint-disable-next-line no-constant-condition
@@ -127,9 +202,13 @@ export class AIService {
                   const content = parsed.choices[0].delta.content;
                   fullResponse += content;
                   
-                  // 调用进度回调
+                  // 调用进度回调 - 将内容拆分为单个字符逐个传递
                   if (onProgress) {
-                    onProgress(content);
+                    // 将 chunk 按字符拆分，实现匀速输出
+                    const characters = content.split('');
+                    characters.forEach(char => {
+                      onProgress(char);
+                    });
                   }
                 }
               } catch (parseError) {
@@ -137,6 +216,22 @@ export class AIService {
                 console.debug('跳过无效数据块:', data.substring(0, 50) + '...');
               }
             }
+          }
+        }
+        
+        // 处理剩余的缓冲区内容
+        while (chunkBuffer.length > 0) {
+          const chunk = chunkBuffer.shift()!;
+          fullResponse += chunk;
+          if (onProgress) {
+            // 将 chunk 按字符拆分，实现匀速输出
+            const characters = chunk.split('');
+            for (const char of characters) {
+              onProgress(char);
+              await new Promise(resolve => setTimeout(resolve, 10));
+            }
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 10));
           }
         }
       } finally {
@@ -152,7 +247,7 @@ export class AIService {
       // 如果API不可用，使用模拟流式响应作为备用方案
       if (error instanceof TypeError && error.message.includes('fetch')) {
         console.log('网络错误，使用模拟流式响应...');
-        return this.simulateStreamResponse(userData, onProgress);
+        return this.simulateStreamResponse(userData, onProgress, 3);
       }
       
       throw error;
@@ -162,22 +257,65 @@ export class AIService {
   // 模拟流式响应的备用方案
   private static async simulateStreamResponse(
     userData: any, 
-    onProgress?: (chunk: string) => void
+    onProgress?: (chunk: string) => void,
+    bufferSize: number = 3
   ): Promise<string> {
     const mockResponse = this.generateMockProfile(userData);
     const words = mockResponse.split('');
     let result = '';
+    let chunkBuffer: string[] = [];
+    let isProcessingBuffer = false;
+
+    // 处理预加载缓冲区
+    const processChunkBuffer = () => {
+      if (chunkBuffer.length > 0 && !isProcessingBuffer) {
+        isProcessingBuffer = true;
+        
+        const processNextChunk = async () => {
+          if (chunkBuffer.length > 0) {
+            const chunk = chunkBuffer.shift()!;
+            result += chunk;
+            
+            // 调用进度回调
+            if (onProgress) {
+              onProgress(chunk);
+            }
+            
+            // 继续处理下一个 chunk
+            await new Promise(resolve => setTimeout(resolve, 10));
+            processNextChunk();
+          } else {
+            isProcessingBuffer = false;
+          }
+        };
+        
+        processNextChunk();
+      }
+    };
 
     for (let i = 0; i < words.length; i++) {
       const chunk = words[i];
-      result += chunk;
       
-      if (onProgress) {
-        onProgress(chunk);
+      // 添加到预加载缓冲区
+      chunkBuffer.push(chunk);
+      
+      // 如果缓冲区达到指定大小，开始处理
+      if (chunkBuffer.length >= bufferSize) {
+        processChunkBuffer();
       }
       
       // 模拟打字机效果
       await new Promise(resolve => setTimeout(resolve, 30));
+    }
+
+    // 处理剩余的缓冲区内容
+    while (chunkBuffer.length > 0) {
+      const chunk = chunkBuffer.shift()!;
+      result += chunk;
+      if (onProgress) {
+        onProgress(chunk);
+      }
+      await new Promise(resolve => setTimeout(resolve, 10));
     }
 
     return result;
