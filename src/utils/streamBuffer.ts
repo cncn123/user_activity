@@ -55,13 +55,19 @@ export class StreamBuffer {
               if (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) {
                 const content = parsed.choices[0].delta.content;
                 
-                // 将内容按字符分割，加入缓存
-                const characters = content.split('');
-                characters.forEach(char => {
-                  if (char.trim() || char === ' ') {
-                    this.buffer.push(char);
-                  }
-                });
+                // 将内容按较大的块分割，保持标签完整性
+                if (content.length <= 5) {
+                  // 短内容直接加入
+                  this.buffer.push(content);
+                } else {
+                  // 长内容按单词分割，但保持标签完整
+                  const chunks = this.splitContentSafely(content);
+                  chunks.forEach(chunk => {
+                    if (chunk.trim()) {
+                      this.buffer.push(chunk);
+                    }
+                  });
+                }
 
                 // 如果缓存达到指定大小，开始输出
                 if (this.buffer.length >= this.bufferSize && !this.isOutputting) {
@@ -117,6 +123,32 @@ export class StreamBuffer {
       this.outputInterval = null;
     }
     this.isOutputting = false;
+  }
+
+  private splitContentSafely(content: string): string[] {
+    // 如果包含标签，保持标签完整性
+    if (content.includes('<think>') || content.includes('</think>')) {
+      return [content]; // 保持标签完整
+    }
+    
+    // 否则按单词分割，每个chunk包含2-3个单词
+    const words = content.split(/(\s+)/);
+    const chunks: string[] = [];
+    let currentChunk = '';
+    
+    for (let i = 0; i < words.length; i++) {
+      currentChunk += words[i];
+      
+      // 每2-3个单词或遇到标点符号时分割
+      if (i % 4 === 3 || /[。！？，；]/.test(words[i]) || i === words.length - 1) {
+        if (currentChunk.trim()) {
+          chunks.push(currentChunk);
+        }
+        currentChunk = '';
+      }
+    }
+    
+    return chunks.filter(chunk => chunk.trim());
   }
 
   public destroy(): void {

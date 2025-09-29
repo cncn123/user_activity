@@ -6,7 +6,7 @@ import { BillingCard } from './cards/BillingCard';
 import { SummaryCard } from './cards/SummaryCard';
 import { AIProfileCard } from './cards/AIProfileCard';
 import { getUserData } from '../utils/presetUsers';
-import { UserKey } from '../App';
+import { UserKey } from '../types';
 
 interface CustomerCardsProps {
   cardType: 'location' | 'network' | 'summary' | 'resource' | 'billing' | 'ai-profile';

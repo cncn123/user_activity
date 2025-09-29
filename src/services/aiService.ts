@@ -19,6 +19,52 @@ const AI_CONFIG = {
 };
 
 export class AIService {
+  // 创建模拟的流式响应
+  private static createMockStreamResponse(userData: any): Response {
+    const mockContent = this.generateMockProfile(userData);
+    
+    // 创建SSE格式的流
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      start(controller) {
+        // 按字符逐步发送内容
+        let index = 0;
+        const sendNextChunk = () => {
+          if (index < mockContent.length) {
+            const chunk = mockContent[index];
+            const sseData = `data: ${JSON.stringify({
+              choices: [{
+                delta: {
+                  content: chunk
+                }
+              }]
+            })}\n\n`;
+            
+            controller.enqueue(encoder.encode(sseData));
+            index++;
+            
+            // 模拟网络延迟
+            setTimeout(sendNextChunk, 50);
+          } else {
+            // 发送结束标记
+            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+            controller.close();
+          }
+        };
+        
+        sendNextChunk();
+      }
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      }
+    });
+  }
+
   static async generateUserProfileStream(userData: any): Promise<Response> {
     console.log('AIService.generateUserProfileStream 被调用');
     
@@ -41,24 +87,29 @@ export class AIService {
       temperature: 0.7
     };
 
-    const response = await fetch(AI_CONFIG.baseURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_CONFIG.apiKey}`,
-        'Accept': 'text/event-stream',
-        'Cache-Control': 'no-cache'
-      },
-      body: JSON.stringify(requestData),
-      mode: 'cors',
-      credentials: 'omit'
-    });
+    try {
+      const response = await fetch(AI_CONFIG.baseURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AI_CONFIG.apiKey}`,
+          'Accept': 'text/event-stream',
+          'Cache-Control': 'no-cache'
+        },
+        body: JSON.stringify(requestData),
+        mode: 'cors',
+        credentials: 'omit'
+      });
 
-    if (!response.ok) {
-      throw new Error(`AI API 请求失败: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`AI API 请求失败: ${response.status}`);
+      }
+
+      return response;
+    } catch (error) {
+      console.log('API不可用，使用模拟流式响应...');
+      return this.createMockStreamResponse(userData);
     }
-
-    return response;
   }
 
   static async generateUserProfile(
@@ -336,11 +387,40 @@ export class AIService {
       billingHistory.reduce((sum: number, bill: any) => sum + (bill.amount || 0), 0) / billingHistory.length : 0;
 
     const profiles = [
-      `该用户是一位${networkType === '5G' ? '科技敏感' : '稳重实用'}型用户，主要活动区域在${location}。数据使用率达${dataUsageRate}%，显示出${dataUsageRate > 70 ? '高频' : '适度'}的网络使用习惯。月均消费${avgBill.toFixed(0)}元，属于${avgBill > 200 ? '高价值' : '标准'}用户群体。消费行为规律，缴费及时，是运营商的优质客户。建议提供${networkType === '5G' ? '5G增值服务' : '性价比套餐'}以提升用户满意度。`,
+      `<think>
+让我分析这个用户的数据：
+- 位置：${location}
+- 网络类型：${networkType}
+- 数据使用率：${dataUsageRate}%
+- 平均账单：${avgBill.toFixed(0)}元
+
+基于这些数据，我可以判断用户的消费习惯和使用模式。${networkType === '5G' ? '5G用户通常对新技术敏感' : '4G用户相对稳重'}，数据使用率${dataUsageRate > 70 ? '较高，属于重度用户' : '适中，使用习惯良好'}。
+</think>
+
+该用户是一位${networkType === '5G' ? '科技敏感' : '稳重实用'}型用户，主要活动区域在${location}。数据使用率达${dataUsageRate}%，显示出${dataUsageRate > 70 ? '高频' : '适度'}的网络使用习惯。月均消费${avgBill.toFixed(0)}元，属于${avgBill > 200 ? '高价值' : '标准'}用户群体。消费行为规律，缴费及时，是运营商的优质客户。建议提供${networkType === '5G' ? '5G增值服务' : '性价比套餐'}以提升用户满意度。`,
       
-      `基于行为数据分析，该用户展现出典型的${location.includes('CBD') || location.includes('中心') ? '商务人士' : '生活型用户'}特征。网络偏好${networkType}，数据消费模式显示${dataUsageRate > 50 ? '重度' : '轻度'}使用倾向。账单稳定在${avgBill.toFixed(0)}元左右，支付习惯良好。用户价值较高，建议针对性推荐${dataUsageRate > 70 ? '无限流量' : '精准流量'}套餐，并关注其潜在的增值服务需求。`,
+      `<think>
+分析用户行为特征：
+1. 地理位置分析：${location}${location.includes('CBD') || location.includes('中心') ? '，这是商务区域，用户可能是上班族' : '，属于生活区域'}
+2. 网络使用分析：${networkType}网络，数据使用${dataUsageRate}%
+3. 消费能力分析：月均${avgBill.toFixed(0)}元，${avgBill > 200 ? '消费能力较强' : '消费较为理性'}
+
+综合这些因素，可以给出用户画像。
+</think>
+
+基于行为数据分析，该用户展现出典型的${location.includes('CBD') || location.includes('中心') ? '商务人士' : '生活型用户'}特征。网络偏好${networkType}，数据消费模式显示${dataUsageRate > 50 ? '重度' : '轻度'}使用倾向。账单稳定在${avgBill.toFixed(0)}元左右，支付习惯良好。用户价值较高，建议针对性推荐${dataUsageRate > 70 ? '无限流量' : '精准流量'}套餐，并关注其潜在的增值服务需求。`,
       
-      `该用户画像显示其为${networkType === '4G' ? '稳健型' : '尝新型'}消费者，地理活动集中在${location}区域。数据使用呈现${dataUsageRate}%的适中水平，体现理性消费观念。近期账单均值${avgBill.toFixed(0)}元，缴费记录优良。综合评估为中高价值客户，具备良好的服务升级潜力，建议提供个性化的套餐优化建议。`
+      `<think>
+用户画像构建思路：
+- 消费类型判断：${networkType === '4G' ? '4G用户相对保守稳健' : '新技术接受度高'}
+- 地理活动范围：主要在${location}
+- 使用习惯：数据使用${dataUsageRate}%，体现了${dataUsageRate > 50 ? '积极的网络使用习惯' : '理性的消费观念'}
+- 价值评估：月均${avgBill.toFixed(0)}元的消费水平
+
+基于以上分析给出最终评估。
+</think>
+
+该用户画像显示其为${networkType === '4G' ? '稳健型' : '尝新型'}消费者，地理活动集中在${location}区域。数据使用呈现${dataUsageRate}%的适中水平，体现理性消费观念。近期账单均值${avgBill.toFixed(0)}元，缴费记录优良。综合评估为中高价值客户，具备良好的服务升级潜力，建议提供个性化的套餐优化建议。`
     ];
 
     return profiles[Math.floor(Math.random() * profiles.length)];

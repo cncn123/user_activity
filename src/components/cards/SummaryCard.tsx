@@ -42,8 +42,8 @@ export const SummaryCard = ({ data }: SummaryCardProps) => {
             <span className="w-3 h-3 bg-violet-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
             客户轨迹
           </h3>
-          <div className="flex items-center bg-violet-500/20 text-violet-100 px-3 py-1.5 rounded-full text-xs border border-violet-400/30 shadow-sm backdrop-blur-sm">
-            <FontAwesomeIcon icon={faClock} className="mr-1.5" />
+          <div className="flex items-center bg-violet-500/20 text-violet-200 px-3 py-1.5 rounded-full text-xs border border-violet-400/30 shadow-sm backdrop-blur-sm">
+            <FontAwesomeIcon icon={faClock} className="mr-1.5 text-violet-300" />
             <span className="font-mono mr-2">
               {new Date(
                 new Date(data.timestamp).getTime() - 45 * 60000,
@@ -77,7 +77,7 @@ export const SummaryCard = ({ data }: SummaryCardProps) => {
             <span
               className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${data.isRoaming ? "bg-orange-400/40 text-orange-100 border-orange-300/60" : "bg-emerald-400/40 text-emerald-100 border-emerald-300/60"}`}
             >
-              <FontAwesomeIcon icon={data.isRoaming ? faGlobe : faHome} className="mr-2" />
+              <FontAwesomeIcon icon={data.isRoaming ? faGlobe : faHome} className={`mr-2 ${data.isRoaming ? "text-orange-300" : "text-emerald-300"}`} />
               {data.isRoaming ? "漫游" : "本地"}
             </span>
           </div>

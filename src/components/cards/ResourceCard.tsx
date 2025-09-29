@@ -41,8 +41,8 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
                 超套警告
               </div>
             )}
-            <div className="flex items-center bg-cyan-500/20 text-cyan-100 px-3 py-1.5 rounded-full text-xs border border-cyan-400/30 shadow-sm backdrop-blur-sm">
-              <FontAwesomeIcon icon={faClock} className="mr-1.5" />
+            <div className="flex items-center bg-cyan-500/20 text-cyan-200 px-3 py-1.5 rounded-full text-xs border border-cyan-400/30 shadow-sm backdrop-blur-sm">
+              <FontAwesomeIcon icon={faClock} className="mr-1.5 text-cyan-300" />
               <span className="font-mono mr-2">
                 {new Date(new Date().getTime() - 8 * 60000).toLocaleTimeString(
                   "zh-CN",
@@ -66,7 +66,7 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
           <div className="pb-4 border-b border-cyan-400/20">
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
-                <FontAwesomeIcon icon={faSignal} className="mr-2" />
+                <FontAwesomeIcon icon={faSignal} className="mr-2 text-cyan-300" />
                 数据流量
               </span>
               <div className="text-right">
@@ -91,7 +91,7 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
             </div>
             {data.isDataOverLimit && (
               <div className="text-xs text-red-300 bg-red-500/10 px-2 py-1 rounded mt-2">
-                <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
+                <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2 text-red-300" />
                 超出 {(data.dataUsed - data.dataTotal).toFixed(2)}GB
               </div>
             )}
@@ -108,7 +108,7 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
               >
                 <FontAwesomeIcon 
                   icon={data.speedLimit === "0速" ? faBan : data.speedLimit === "限速" ? faClock : faRocket} 
-                  className="mr-2" 
+                  className={`mr-2 ${data.speedLimit === "0速" ? "text-red-300" : data.speedLimit === "限速" ? "text-amber-300" : "text-emerald-300"}`} 
                 />
                 {data.speedLimit === "0速" ? "0速" : data.speedLimit === "限速" ? "限速" : "正常"}
               </span>

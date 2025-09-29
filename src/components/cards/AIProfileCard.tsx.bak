@@ -25,13 +25,8 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   const abortRef = useRef<AbortController | null>(null);
   const streamBufferRef = useRef<StreamBuffer | null>(null);
 
-  // 清理显示内容中的think标签
-  const cleanDisplayContent = (content: string): string => {
-    return content
-      .replace(/<think>/g, "")
-      .replace(/<\/think>/g, "")
-      .trim();
-  };
+  // 调试：打印接收到的用户数据
+  console.log("AIProfileCard 接收到的 userData:", userData);
 
   const generateProfile = async () => {
     console.log("generateProfile 被调用");
@@ -46,108 +41,72 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
     setIsStreamingThinking(false);
     setIsStreamingAnswer(false);
 
-    // 销毁之前的StreamBuffer
-    streamBufferRef.current?.destroy();
-
     try {
       console.log("开始调用 AI 服务...");
 
       let currentThinking = "";
       let currentAnswer = "";
       let inThinkingBlock = false;
+      let buffer = "";
 
-      // 创建新的StreamBuffer实例
-      streamBufferRef.current = new StreamBuffer(
-        (chunk: string) => {
-          console.log("收到chunk:", chunk, "inThinkingBlock:", inThinkingBlock);
-          
-          // 检测思考块的开始
-          if (chunk.includes("<think>")) {
-            console.log("检测到<think>标签");
+      const result = await AIService.generateUserProfile(
+        userData,
+        async (chunk: string) => {
+          buffer += chunk;
+
+          // 添加小延迟实现匀速输出效果
+          await new Promise(resolve => setTimeout(resolve, 5));
+
+          // 检测思考块的开始和结束
+          if (buffer.includes(" ")) {
             inThinkingBlock = true;
             setIsStreamingThinking(true);
-            setIsStreamingAnswer(false);
-            
-            // 处理<think>标签前的内容（如果有）
-            const thinkStart = chunk.indexOf("<think>");
-            const beforeThink = chunk.substring(0, thinkStart);
-            if (beforeThink.trim()) {
+            const thinkStart = buffer.indexOf(" ") + 7;
+            const beforeThink = buffer.substring(0, buffer.indexOf(" "));
+            if (beforeThink && !inThinkingBlock) {
               currentAnswer += beforeThink;
               setFinalAnswer(currentAnswer);
             }
-            
-            // 处理<think>标签后的内容
-            const afterThinkTag = chunk.substring(thinkStart + 7);
-            if (afterThinkTag) {
-              currentThinking += afterThinkTag;
-              setThinking(currentThinking);
-              console.log("设置思考内容:", currentThinking);
-            }
-            return;
+            buffer = buffer.substring(thinkStart);
           }
 
-          // 检测思考块的结束
-          if (chunk.includes("</think>")) {
-            console.log("检测到</think>标签");
-            const thinkEnd = chunk.indexOf("</think>");
-            
-            // 处理</think>标签前的思考内容
-            const thinkContent = chunk.substring(0, thinkEnd);
-            if (thinkContent) {
-              currentThinking += thinkContent;
-              setThinking(currentThinking);
-              console.log("完成思考内容:", currentThinking);
-            }
-            
-            // 切换到答案模式
-            inThinkingBlock = false;
+          if (buffer.includes(" ")) {
+            const thinkEnd = buffer.indexOf(" ");
+            const thinkContent = buffer.substring(0, thinkEnd);
+            currentThinking += thinkContent;
+            setThinking(currentThinking);
             setIsStreamingThinking(false);
             setIsStreamingAnswer(true);
-            
-            // 处理</think>标签后的答案内容
-            const afterThinkEnd = chunk.substring(thinkEnd + 8);
-            if (afterThinkEnd.trim()) {
-              // 清理可能的换行符和空格
-              const cleanAnswer = afterThinkEnd.replace(/^\s+/, '');
-              currentAnswer += cleanAnswer;
-              setFinalAnswer(currentAnswer);
-              console.log("开始答案内容:", currentAnswer);
-            }
-            return;
+            buffer = buffer.substring(thinkEnd + 8);
+            inThinkingBlock = false;
           }
 
-          // 根据当前状态处理内容
           if (inThinkingBlock) {
-            // 在思考块内，添加到思考内容
-            currentThinking += chunk;
+            currentThinking += buffer;
             setThinking(currentThinking);
-            console.log("添加思考内容:", chunk, "总思考内容:", currentThinking);
+            buffer = "";
           } else {
-            // 在思考块外，添加到最终答案
-            currentAnswer += chunk;
+            currentAnswer += buffer;
             setFinalAnswer(currentAnswer);
-            console.log("添加答案内容:", chunk, "总答案内容:", currentAnswer);
+            buffer = "";
           }
         },
-        () => {
-          // 流完成回调
-          setIsStreamingThinking(false);
-          setIsStreamingAnswer(false);
-          setLoading(false);
-        },
-        1, // 缓存1个chunk
-        30  // 每30ms输出一个chunk
       );
 
-      // 获取流式响应
-      const response = await AIService.generateUserProfileStream(userData);
+      console.log("AI 服务完整响应:", result);
 
-      if (response.body) {
-        await streamBufferRef.current.processStream(response.body);
+      // 解析最终结果
+      const thinkMatch = result.match(/([\s\S]*?)<\/think>/);
+      if (thinkMatch) {
+        setThinking(thinkMatch[1]);
+        setFinalAnswer(result.replace(/[\s\S]*?<\/think>/, "").trim());
+      } else {
+        setFinalAnswer(result);
       }
     } catch (err) {
       setError("生成用户画像失败，请稍后重试");
       console.error("AI Profile generation error:", err);
+    } finally {
       setLoading(false);
       setIsStreamingThinking(false);
       setIsStreamingAnswer(false);
@@ -175,10 +134,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
           </h3>
           <div className="flex items-center space-x-2 flex-shrink-0">
             <div className="flex items-center bg-violet-500/20 text-violet-200 px-3 py-1.5 rounded-full text-xs border border-violet-400/30 shadow-sm backdrop-blur-sm">
-              <FontAwesomeIcon
-                icon={faRobot}
-                className="mr-1.5 text-violet-300"
-              />
+              <FontAwesomeIcon icon={faRobot} className="mr-1.5 text-violet-300" />
               <span className="font-mono mr-2">
                 {new Date().toLocaleTimeString("zh-CN", {
                   hour: "2-digit",
@@ -241,53 +197,58 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
               </div>
             ) : thinking || finalAnswer ? (
               <div className="space-y-4">
-                {/* AI 思考过程 - 只在有思考内容时显示 */}
-                {thinking && thinking.trim() && (
-                  <div className="bg-violet-500/10 border border-violet-400/30 rounded-xl p-4">
-                    <div className="flex items-center mb-3">
-                      <div className="w-2 h-2 bg-violet-400 rounded-full mr-2 animate-pulse"></div>
-                      <span className="text-violet-200 text-sm font-medium">
-                        🤔 AI 思考过程
-                      </span>
-                      {isStreamingThinking && (
-                        <div className="ml-2 flex items-center">
-                          <span className="inline-block w-1 h-3 bg-violet-400 animate-pulse"></span>
+                {/* AI 分析过程和结果 */}
+                {(thinking || finalAnswer) && (
+                  <div className="bg-white/5 border border-violet-400/20 rounded-xl p-4">
+                    {/* AI 思考过程 */}
+                    {thinking && (
+                      <div className="mb-4">
+                        <div className="flex items-center mb-3">
+                          <div className="w-2 h-2 bg-violet-400 rounded-full mr-2 animate-pulse"></div>
+                          <span className="text-violet-200 text-sm font-medium">
+                            AI 思考过程
+                          </span>
+                          {isStreamingThinking && (
+                            <div className="ml-2 flex items-center">
+                              <span className="inline-block w-1 h-3 bg-violet-400 animate-pulse"></span>
+                            </div>
+                          )}
+                          <div className="flex-1 ml-3 h-px bg-gradient-to-r from-violet-400/30 to-transparent"></div>
                         </div>
-                      )}
-                      <div className="flex-1 ml-3 h-px bg-gradient-to-r from-violet-400/30 to-transparent"></div>
-                    </div>
-                    <div className="text-violet-100 text-xs leading-relaxed bg-violet-500/20 rounded-lg p-3 border-l-2 border-violet-400/50">
-                      <div className="text-violet-200 whitespace-pre-wrap font-mono">
-                        {cleanDisplayContent(thinking)}
-                        {isStreamingThinking && (
-                          <span className="inline-block w-2 h-4 bg-violet-400 animate-pulse ml-1"></span>
-                        )}
+                        <div className="text-violet-100 text-xs leading-relaxed bg-violet-500/10 rounded-lg p-3 border-l-2 border-violet-400/40">
+                          <div className="text-violet-200 whitespace-pre-wrap font-mono">
+                            {thinking}
+                            {isStreamingThinking && (
+                              <span className="inline-block w-2 h-4 bg-violet-400 animate-pulse ml-1"></span>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )}
+                    )}
 
-                {/* 分析结果 - 只在有最终答案时显示 */}
-                {finalAnswer && finalAnswer.trim() && (
-                  <div className="bg-emerald-500/10 border border-emerald-400/30 rounded-xl p-4">
-                    <div className="flex items-center mb-3">
-                      <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-pulse"></div>
-                      <span className="text-emerald-200 text-sm font-medium">
-                        ✨ 分析结果
-                      </span>
-                      {isStreamingAnswer && (
-                        <div className="ml-2 flex items-center">
-                          <span className="inline-block w-1 h-3 bg-emerald-400 animate-pulse"></span>
+                    {/* 最终回答 */}
+                    {finalAnswer && (
+                      <div>
+                        <div className="flex items-center mb-3">
+                          <div className="w-2 h-2 bg-violet-400 rounded-full mr-2 animate-pulse"></div>
+                          <span className="text-violet-200 text-sm font-medium">
+                            分析结果
+                          </span>
+                          {isStreamingAnswer && (
+                            <div className="ml-2 flex items-center">
+                              <span className="inline-block w-1 h-3 bg-violet-400 animate-pulse"></span>
+                            </div>
+                          )}
+                          <div className="flex-1 ml-3 h-px bg-gradient-to-r from-violet-400/30 to-transparent"></div>
                         </div>
-                      )}
-                      <div className="flex-1 ml-3 h-px bg-gradient-to-r from-emerald-400/30 to-transparent"></div>
-                    </div>
-                    <div className="text-white/95 text-sm leading-relaxed bg-emerald-500/20 rounded-lg p-4 border-l-2 border-emerald-400/50">
-                      {cleanDisplayContent(finalAnswer)}
-                      {isStreamingAnswer && (
-                        <span className="inline-block w-2 h-4 bg-emerald-400 animate-pulse ml-1"></span>
-                      )}
-                    </div>
+                        <div className="text-white/90 text-sm leading-relaxed">
+                          {finalAnswer}
+                          {isStreamingAnswer && (
+                            <span className="inline-block w-2 h-4 bg-violet-400 animate-pulse ml-1"></span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -348,10 +309,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                     style={{ pointerEvents: "auto" }}
                   >
                     <span className="flex items-center space-x-2">
-                      <FontAwesomeIcon
-                        icon={faRocket}
-                        className="text-violet-300"
-                      />
+                      <FontAwesomeIcon icon={faRocket} className="text-violet-300" />
                       <span>生成 AI 画像</span>
                     </span>
                   </button>

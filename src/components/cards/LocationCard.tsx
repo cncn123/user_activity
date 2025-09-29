@@ -35,8 +35,8 @@ export const LocationCard = ({ data }: LocationCardProps) => {
             客户位置
           </h3>
         </div>
-        <div className="flex items-center bg-blue-500/20 text-blue-100 px-3 py-1.5 rounded-full text-xs border border-blue-400/30 shadow-sm backdrop-blur-sm">
-          <FontAwesomeIcon icon={faClock} className="mr-1.5" />
+        <div className="flex items-center bg-blue-500/20 text-blue-200 px-3 py-1.5 rounded-full text-xs border border-blue-400/30 shadow-sm backdrop-blur-sm">
+          <FontAwesomeIcon icon={faClock} className="mr-1.5 text-blue-300" />
           <span className="font-mono mr-2">
             {new Date(data.timestamp).toLocaleTimeString("zh-CN", {
               hour: "2-digit",
@@ -52,9 +52,9 @@ export const LocationCard = ({ data }: LocationCardProps) => {
             <span className="w-3 h-3 bg-blue-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
             客户位置
           </h3>
-          <div className="flex items-center bg-blue-500/20 text-blue-100 px-3 py-1.5 rounded-full text-xs border border-blue-400/30 shadow-sm backdrop-blur-sm">
-            <FontAwesomeIcon icon={faClock} className="mr-1.5" />
-            <span className="text-blue-100/90 font-mono mr-2">
+          <div className="flex items-center bg-blue-500/20 text-blue-200 px-3 py-1.5 rounded-full text-xs border border-blue-400/30 shadow-sm backdrop-blur-sm">
+            <FontAwesomeIcon icon={faClock} className="mr-1.5 text-blue-300" />
+            <span className="text-blue-200/90 font-mono mr-2">
               {new Date(
                 new Date(data.timestamp).getTime() - 2 * 60000,
               ).toLocaleTimeString("zh-CN", {
@@ -72,7 +72,7 @@ export const LocationCard = ({ data }: LocationCardProps) => {
             <div className="flex items-center">
               <FontAwesomeIcon
                 icon={faMapMarkerAlt}
-                className="text-4xl mr-4"
+                className="text-4xl mr-4 text-blue-300"
               />
               <div>
                 <div className="text-xl font-extrabold text-white drop-shadow-sm">
@@ -85,7 +85,7 @@ export const LocationCard = ({ data }: LocationCardProps) => {
             >
               <FontAwesomeIcon
                 icon={data.isRoaming ? faGlobe : faHome}
-                className="mr-2"
+                className={`mr-2 ${data.isRoaming ? "text-amber-300" : "text-emerald-300"}`}
               />
               {data.isRoaming ? "漫游" : "本地"}
             </span>
@@ -109,7 +109,7 @@ export const LocationCard = ({ data }: LocationCardProps) => {
                   description={`停留 ${track.duration}分钟`}
                   date={getTimeAgo(track.timestamp)}
                   icon={
-                    <FontAwesomeIcon icon={getTrackIcon(track.isRoaming)} />
+                    <FontAwesomeIcon icon={getTrackIcon(track.isRoaming)} className={track.isRoaming ? "text-amber-300" : "text-blue-300"}/>
                   }
                   themeColor="blue"
                   isLast={index === array.length - 1}

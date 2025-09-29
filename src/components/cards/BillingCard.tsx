@@ -60,8 +60,8 @@ export const BillingCard = ({ data }: BillingCardProps) => {
             账单查询
           </h3>
         </div>
-        <div className="flex items-center bg-orange-500/20 text-orange-100 px-3 py-1.5 rounded-full text-xs border border-orange-400/30 shadow-sm backdrop-blur-sm">
-          <FontAwesomeIcon icon={faClock} className="mr-1.5" />
+        <div className="flex items-center bg-orange-500/20 text-orange-200 px-3 py-1.5 rounded-full text-xs border border-orange-400/30 shadow-sm backdrop-blur-sm">
+          <FontAwesomeIcon icon={faClock} className="mr-1.5 text-orange-300" />
           <span className="font-mono mr-2">
             {new Date(new Date().getTime() - 3 * 60 * 60000).toLocaleTimeString(
               "zh-CN",
@@ -93,7 +93,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                       ? faExclamationCircle
                       : faExclamationTriangle
                 }
-                className="mr-2"
+                className={`mr-2 ${data.currentMonth.status === "已缴费" ? "text-emerald-300" : data.currentMonth.status === "未缴费" ? "text-amber-300" : "text-red-300"}`}
               />
               {data.currentMonth.status === "已缴费"
                 ? "已缴费"
@@ -121,7 +121,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                   icon={getComparisonIcon(
                     data.monthlyComparison.currentVsPrevious,
                   )}
-                  className="mr-1"
+                  className={`mr-1 ${data.monthlyComparison.currentVsPrevious > 0 ? "text-red-300" : data.monthlyComparison.currentVsPrevious < 0 ? "text-emerald-300" : "text-white/80"}`}
                 />
                 {Math.abs(data.monthlyComparison.currentVsPrevious)}%
               </div>
@@ -137,7 +137,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
                   icon={getComparisonIcon(
                     data.monthlyComparison.currentVsSameLastYear,
                   )}
-                  className="mr-1"
+                  className={`mr-1 ${data.monthlyComparison.currentVsSameLastYear > 0 ? "text-red-300" : data.monthlyComparison.currentVsSameLastYear < 0 ? "text-emerald-300" : "text-white/80"}`}
                 />
                 {Math.abs(data.monthlyComparison.currentVsSameLastYear)}%
               </div>
@@ -149,7 +149,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
         <div className="pt-4">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
-              <FontAwesomeIcon icon={faChartLine} className="mr-2" />
+              <FontAwesomeIcon icon={faChartLine} className="mr-2 text-orange-300" />
               12个月趋势
             </span>
             <span className="text-xs text-orange-100 font-semibold bg-orange-500/20 px-3 py-1 rounded border border-orange-400/30 shadow-sm">
