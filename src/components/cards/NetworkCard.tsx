@@ -1,37 +1,57 @@
 import { NetworkData } from "../../types/customer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faSignal, faRocket, faBolt, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
+import { faWifi, } from "@fortawesome/free-solid-svg-icons";
+import { CARD_THEMES } from "../../styles/theme";
 
 interface NetworkCardProps {
   data: NetworkData;
 }
 
-export const NetworkCard = ({ data }: NetworkCardProps) => {
-  const getNetworkColor = (networkType: string) => {
-    switch (networkType) {
-      case "5G":
-        return "text-green-300";
-      case "4G":
-        return "text-blue-300";
-      case "3G":
-        return "text-orange-300";
-      default:
-        return "text-gray-300";
-    }
-  };
+// Define consistent color schemes
+const NETWORK_COLORS = {
+  "5G": {
+    text: "text-emerald-300",
+    bg: "bg-emerald-500/20 border-emerald-500/40",
+    icon: "text-emerald-400"
+  },
+  "4G": {
+    text: "text-blue-300",
+    bg: "bg-blue-500/20 border-blue-500/40",
+    icon: "text-blue-400"
+  },
+  "3G": {
+    text: "text-orange-300",
+    bg: "bg-orange-500/20 border-orange-500/40",
+    icon: "text-orange-400"
+  },
+  default: {
+    text: "text-gray-300",
+    bg: "bg-gray-500/20 border-gray-500/40",
+    icon: "text-gray-400"
+  }
+};
 
-  const getNetworkBgColor = (networkType: string) => {
-    switch (networkType) {
-      case "5G":
-        return "bg-green-500/20 border-green-500/40";
-      case "4G":
-        return "bg-blue-500/20 border-blue-500/40";
-      case "3G":
-        return "bg-orange-500/20 border-orange-500/40";
-      default:
-        return "bg-gray-500/20 border-gray-500/40";
-    }
-  };
+const SIGNAL_STRENGTH_COLORS = [
+  { bg: "bg-red-500/40 text-red-50 border-red-500/60", icon: "text-red-300" },       // 0: No Signal
+  { bg: "bg-red-400/40 text-red-100 border-red-400/60", icon: "text-red-300" },     // 1: Very Poor
+  { bg: "bg-yellow-400/40 text-yellow-100 border-yellow-400/60", icon: "text-yellow-300" }, // 2: Poor/Fair
+  { bg: "bg-blue-400/40 text-blue-100 border-blue-400/60", icon: "text-blue-300" }, // 3: Good
+  { bg: "bg-blue-300/40 text-blue-50 border-blue-300/60", icon: "text-blue-200" },  // 4: Very Good
+  { bg: "bg-emerald-400/40 text-emerald-50 border-emerald-400/60", icon: "text-emerald-200" } // 5: Excellent
+];
+
+const getStatusText = (strength: number) => {
+  if (strength === 5) return "极佳";
+  if (strength === 4) return "很好";
+  if (strength === 3) return "良好";
+  if (strength === 2) return "一般";
+  if (strength === 1) return "较差";
+  return "无信号";
+};
+
+export const NetworkCard = ({ data }: NetworkCardProps) => {
+  const networkColor = NETWORK_COLORS[data.networkType as keyof typeof NETWORK_COLORS] || NETWORK_COLORS.default;
 
   return (
     <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-emerald shadow-2xl">
@@ -60,33 +80,36 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
             <span className="text-sm font-semibold text-emerald-200">
               网络制式
             </span>
-            <span className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${getNetworkBgColor(data.networkType)} ${getNetworkColor(data.networkType)}`}>
+            <span className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${networkColor.bg} ${networkColor.text}`}>
               {data.networkType}
             </span>
           </div>
           
           <div className="flex justify-between items-center py-3 border-b border-emerald-400/20">
             <span className="text-sm font-semibold text-emerald-200">信号强度</span>
-            <span className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${
-              data.signalStrength >= 4 
-                ? 'bg-emerald-400/40 text-emerald-100 border-emerald-300/60' 
-                : data.signalStrength >= 3
-                ? 'bg-blue-400/40 text-blue-100 border-blue-300/60'
-                : data.signalStrength >= 2
-                ? 'bg-yellow-400/40 text-yellow-100 border-yellow-300/60'
-                : 'bg-red-400/40 text-red-100 border-red-300/60'
-            }`}>
-              <FontAwesomeIcon icon={faSignal} className={`mr-2 ${data.signalStrength >= 4 ? "text-emerald-300" : data.signalStrength >= 3 ? "text-blue-300" : data.signalStrength >= 2 ? "text-yellow-300" : "text-red-300"}`} />
-              {data.signalStrength}/5 · {data.signalStrength >= 4 ? "优秀" : data.signalStrength >= 3 ? "良好" : data.signalStrength >= 2 ? "一般" : "较差"}
-            </span>
+            {data.signalStrength !== undefined && (
+              <span 
+                className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${
+                  SIGNAL_STRENGTH_COLORS[Math.min(data.signalStrength, 5)]?.bg || SIGNAL_STRENGTH_COLORS[0].bg
+                }`}
+              >
+                <FontAwesomeIcon 
+                  icon={faSignal} 
+                  className={`mr-2 ${
+                    SIGNAL_STRENGTH_COLORS[Math.min(data.signalStrength, 5)]?.icon || SIGNAL_STRENGTH_COLORS[0].icon
+                  }`} 
+                />
+                <span className="text-emerald-100">{data.signalStrength}/5 · {getStatusText(data.signalStrength)}</span>
+              </span>
+            )}
           </div>
           
           <div className="flex justify-between items-center py-3 border-b border-emerald-400/20">
             <span className="text-sm font-semibold text-emerald-200">技术制式</span>
-            <span className="text-sm font-bold text-white drop-shadow-sm bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-400/30">
+            <span className="text-sm font-bold text-emerald-100 drop-shadow-sm bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-400/40">
               <FontAwesomeIcon 
                 icon={data.networkType === "5G" ? faRocket : data.networkType === "4G" ? faBolt : faSatelliteDish} 
-                className={`mr-2 ${data.networkType === "5G" ? "text-emerald-300" : data.networkType === "4G" ? "text-blue-300" : "text-gray-300"}`} 
+                className={`mr-2 ${networkColor.icon}`} 
               />
               {data.networkType === "5G" ? "NSA/SA" : data.networkType === "4G" ? "LTE" : "UMTS"}
             </span>

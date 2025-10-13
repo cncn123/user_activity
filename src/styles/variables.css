@@ -34,6 +34,27 @@
   --cyan-secondary: #0891b2;
   --violet-primary: #8b5cf6;
   --violet-secondary: #7c3aed;
+  --violet-tertiary: #6d28d9;
+
+  --blue-primary-rgb: 59, 130, 246;
+  --blue-secondary-rgb: 37, 99, 235;
+  --blue-tertiary-rgb: 29, 78, 216;
+
+  --emerald-primary-rgb: 16, 185, 129;
+  --emerald-secondary-rgb: 5, 150, 105;
+  --emerald-tertiary-rgb: 4, 120, 87;
+
+  --orange-primary-rgb: 249, 115, 22;
+  --orange-secondary-rgb: 234, 88, 12;
+  --orange-tertiary-rgb: 194, 65, 12;
+
+  --cyan-primary-rgb: 6, 182, 212;
+  --cyan-secondary-rgb: 8, 145, 178;
+  --cyan-tertiary-rgb: 14, 116, 144;
+
+  --violet-primary-rgb: 139, 92, 246;
+  --violet-secondary-rgb: 124, 58, 237;
+  --violet-tertiary-rgb: 109, 40, 217;
 }
 
 /* Dark theme overrides */

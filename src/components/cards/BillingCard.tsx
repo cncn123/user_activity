@@ -19,6 +19,7 @@ import {
   faArrowRight,
   faChartLine,
 } from "@fortawesome/free-solid-svg-icons";
+import { CARD_THEMES } from "../../styles/theme";
 
 interface BillingCardProps {
   data: BillingData;
@@ -26,6 +27,8 @@ interface BillingCardProps {
 
 export const BillingCard = ({ data }: BillingCardProps) => {
   const { theme } = useTheme();
+  const cardTheme = CARD_THEMES.Billing;
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "已缴费":
@@ -52,16 +55,32 @@ export const BillingCard = ({ data }: BillingCardProps) => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-orange shadow-2xl">
+    <div
+      className={`h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
+      style={
+        {
+          "--theme-primary-rgb": `var(--${cardTheme.base}-primary-rgb)`,
+          "--theme-secondary-rgb": `var(--${cardTheme.base}-secondary-rgb)`,
+          "--theme-tertiary-rgb": `var(--${cardTheme.base}-tertiary-rgb)`,
+        } as React.CSSProperties
+      }
+    >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <span className="w-3 h-3 bg-orange-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
+          <span
+            className={`w-3 h-3 bg-${cardTheme.pulse}-400 rounded-full mr-3 animate-pulse shadow-lg`}
+          ></span>
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm">
             账单查询
           </h3>
         </div>
-        <div className="flex items-center bg-orange-500/20 text-orange-200 px-3 py-1.5 rounded-full text-xs border border-orange-400/30 shadow-sm backdrop-blur-sm">
-          <FontAwesomeIcon icon={faClock} className="mr-1.5 text-orange-300" />
+        <div
+          className={`flex items-center bg-${cardTheme.base}-500/20 text-${cardTheme.base}-200 px-3 py-1.5 rounded-full text-xs border border-${cardTheme.base}-400/30 shadow-sm backdrop-blur-sm`}
+        >
+          <FontAwesomeIcon
+            icon={faClock}
+            className={`mr-1.5 text-${cardTheme.base}-300`}
+          />
           <span className="font-mono mr-2">
             {new Date(new Date().getTime() - 3 * 60 * 60000).toLocaleTimeString(
               "zh-CN",
@@ -74,7 +93,9 @@ export const BillingCard = ({ data }: BillingCardProps) => {
 
       <div className="space-y-3 flex-1">
         {/* 当前月份账单 */}
-        <div className="pb-4 border-b border-orange-400/20">
+        <div
+          className={`pb-4 border-b border-${cardTheme.base}-400/20`}
+        >
           <div className="flex justify-between items-center">
             <div>
               <div className="text-xs text-white/80 font-medium">本月账单</div>
@@ -108,7 +129,9 @@ export const BillingCard = ({ data }: BillingCardProps) => {
         </div>
 
         {/* 环比同比 */}
-        <div className="py-4 border-b border-orange-400/20">
+        <div
+          className={`py-4 border-b border-${cardTheme.base}-400/20`}
+        >
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <div className="text-xs text-white/80 font-medium mb-1">
@@ -149,16 +172,23 @@ export const BillingCard = ({ data }: BillingCardProps) => {
         <div className="pt-4">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
-              <FontAwesomeIcon icon={faChartLine} className="mr-2 text-orange-300" />
+              <FontAwesomeIcon
+                icon={faChartLine}
+                className={`mr-2 text-${cardTheme.base}-300`}
+              />
               12个月趋势
             </span>
-            <span className="text-xs text-orange-100 font-semibold bg-orange-500/20 px-3 py-1 rounded border border-orange-400/30 shadow-sm">
+            <span
+              className={`text-xs text-${cardTheme.base}-100 font-semibold bg-${cardTheme.base}-500/20 px-3 py-1 rounded border border-${cardTheme.base}-400/30 shadow-sm`}
+            >
               总额 ${data.totalAmount12Months}
             </span>
           </div>
 
           {/* 趋势图 */}
-          <div className="relative h-32 bg-orange-500/5 rounded-lg p-2 mb-3 border border-orange-400/20 shadow-inner">
+          <div
+            className={`relative h-32 bg-${cardTheme.base}-500/5 rounded-lg p-2 mb-3 border border-${cardTheme.base}-400/20 shadow-inner`}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={data.last12Months}

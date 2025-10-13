@@ -8,6 +8,7 @@ import {
   faRocket,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
+import { CARD_THEMES } from "../../styles/theme";
 
 interface AIProfileCardProps {
   userData: any;
@@ -25,6 +26,8 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   const abortRef = useRef<AbortController | null>(null);
   const streamBufferRef = useRef<StreamBuffer | null>(null);
 
+  const cardTheme = CARD_THEMES.AIProfile;
+
   // 清理显示内容中的think标签
   const cleanDisplayContent = (content: string): string => {
     return content
@@ -34,8 +37,8 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   };
 
   const generateProfile = async () => {
-    console.log("generateProfile 被调用");
-    console.log("用户数据:", userData);
+    // console.log("generateProfile 被调用");
+    // console.log("用户数据:", userData);
 
     setLoading(true);
     abortRef.current?.abort();
@@ -50,7 +53,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
     streamBufferRef.current?.destroy();
 
     try {
-      console.log("开始调用 AI 服务...");
+      // console.log("开始调用 AI 服务...");
 
       let currentThinking = "";
       let currentAnswer = "";
@@ -59,7 +62,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
       // 创建新的StreamBuffer实例
       streamBufferRef.current = new StreamBuffer(
         (chunk: string) => {
-          console.log("收到chunk:", chunk, "inThinkingBlock:", inThinkingBlock);
+          // console.debug("chunk", chunk)
           
           // 检测思考块的开始
           if (chunk.includes("<think>")) {
@@ -136,7 +139,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
           setLoading(false);
         },
         1, // 缓存1个chunk
-        30  // 每30ms输出一个chunk
+        80  // 每80ms输出一个chunk
       );
 
       // 获取流式响应
@@ -166,18 +169,31 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col p-6 text-white rounded-3xl glass-card-violet shadow-2xl">
+    <div
+      className={`h-full w-full flex flex-col p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
+      style={
+        {
+          "--theme-primary-rgb": `var(--${cardTheme.base}-primary-rgb)`,
+          "--theme-secondary-rgb": `var(--${cardTheme.base}-secondary-rgb)`,
+          "--theme-tertiary-rgb": `var(--${cardTheme.base}-tertiary-rgb)`,
+        } as React.CSSProperties
+      }
+    >
       <div className="flex flex-col flex-1 min-h-0">
         <div className="flex items-center justify-between mb-4 flex-shrink-0">
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
-            <span className="w-3 h-3 bg-violet-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
+            <span
+              className={`w-3 h-3 bg-${cardTheme.pulse}-400 rounded-full mr-3 animate-pulse shadow-lg`}
+            ></span>
             <span className="text-white">AI 用户画像</span>
           </h3>
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <div className="flex items-center bg-violet-500/20 text-violet-200 px-3 py-1.5 rounded-full text-xs border border-violet-400/30 shadow-sm backdrop-blur-sm">
+            <div
+              className={`flex items-center bg-${cardTheme.base}-500/20 text-${cardTheme.base}-200 px-3 py-1.5 rounded-full text-xs border border-${cardTheme.base}-400/30 shadow-sm backdrop-blur-sm`}
+            >
               <FontAwesomeIcon
                 icon={faRobot}
-                className="mr-1.5 text-violet-300"
+                className={`mr-1.5 text-${cardTheme.base}-300`}
               />
               <span className="font-mono mr-2">
                 {new Date().toLocaleTimeString("zh-CN", {
@@ -198,13 +214,13 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                   e.stopPropagation();
                 }}
                 disabled={loading}
-                className="p-2 rounded-full bg-violet-500/20 hover:bg-violet-500/30 border border-violet-400/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group-hover:shadow-lg group-hover:scale-110 flex items-center justify-center"
+                className={`p-2 rounded-full bg-${cardTheme.base}-500/20 hover:bg-${cardTheme.base}-500/30 border border-${cardTheme.base}-400/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group-hover:shadow-lg group-hover:scale-110 flex items-center justify-center`}
                 title="重新生成"
                 style={{ pointerEvents: "auto" }}
               >
                 <FontAwesomeIcon
                   icon={faRotate}
-                  className={`text-sm ${loading ? "text-violet-300 animate-spin" : "text-violet-300 hover:text-violet-200"}`}
+                  className={`text-sm ${loading ? `text-${cardTheme.base}-300 animate-spin` : `text-${cardTheme.base}-300 hover:text-${cardTheme.base}-200`}`}
                 />
               </button>
             </div>
@@ -213,7 +229,9 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
 
         {/* AI 分析内容 */}
         <div className="flex flex-col flex-1 min-h-0">
-          <div className="bg-white/5 rounded-xl p-4 flex-1 min-h-0 overflow-y-auto border border-violet-400/20">
+          <div
+            className={`bg-white/5 rounded-xl p-4 flex-1 min-h-0 overflow-y-auto border border-${cardTheme.base}-400/20`}
+          >
             {error ? (
               <div className="flex items-center justify-center h-full">
                 <div className="flex flex-col items-center space-y-3 text-center">
@@ -231,7 +249,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                     onMouseDown={(e) => {
                       e.stopPropagation();
                     }}
-                    className="px-4 py-2 bg-violet-500/20 hover:bg-violet-500/30 rounded-lg border border-violet-400/30 text-white text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    className={`px-4 py-2 bg-${cardTheme.base}-500/20 hover:bg-${cardTheme.base}-500/30 rounded-lg border border-${cardTheme.base}-400/30 text-white text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed`}
                     style={{ pointerEvents: "auto" }}
                     disabled={loading}
                   >
@@ -243,24 +261,40 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
               <div className="space-y-4">
                 {/* AI 思考过程 - 只在有思考内容时显示 */}
                 {thinking && thinking.trim() && (
-                  <div className="bg-violet-500/10 border border-violet-400/30 rounded-xl p-4">
+                  <div
+                    className={`bg-${cardTheme.base}-500/10 border border-${cardTheme.base}-400/30 rounded-xl p-4`}
+                  >
                     <div className="flex items-center mb-3">
-                      <div className="w-2 h-2 bg-violet-400 rounded-full mr-2 animate-pulse"></div>
-                      <span className="text-violet-200 text-sm font-medium">
+                      <div
+                        className={`w-2 h-2 bg-${cardTheme.base}-400 rounded-full mr-2 animate-pulse`}
+                      ></div>
+                      <span
+                        className={`text-${cardTheme.base}-200 text-sm font-medium`}
+                      >
                         🤔 AI 思考过程
                       </span>
                       {isStreamingThinking && (
                         <div className="ml-2 flex items-center">
-                          <span className="inline-block w-1 h-3 bg-violet-400 animate-pulse"></span>
+                          <span
+                            className={`inline-block w-1 h-3 bg-${cardTheme.base}-400 animate-pulse`}
+                          ></span>
                         </div>
                       )}
-                      <div className="flex-1 ml-3 h-px bg-gradient-to-r from-violet-400/30 to-transparent"></div>
+                      <div
+                        className={`flex-1 ml-3 h-px bg-gradient-to-r from-${cardTheme.base}-400/30 to-transparent`}
+                      ></div>
                     </div>
-                    <div className="text-violet-100 text-xs leading-relaxed bg-violet-500/20 rounded-lg p-3 border-l-2 border-violet-400/50">
-                      <div className="text-violet-200 whitespace-pre-wrap font-mono">
+                    <div
+                      className={`text-violet-100 text-xs leading-relaxed bg-${cardTheme.base}-500/20 rounded-lg p-3 border-l-2 border-${cardTheme.base}-400/50`}
+                    >
+                      <div
+                        className={`text-${cardTheme.base}-200 whitespace-pre-wrap font-mono`}
+                      >
                         {cleanDisplayContent(thinking)}
                         {isStreamingThinking && (
-                          <span className="inline-block w-2 h-4 bg-violet-400 animate-pulse ml-1"></span>
+                          <span
+                            className={`inline-block w-2 h-4 bg-${cardTheme.base}-400 animate-pulse ml-1`}
+                          ></span>
                         )}
                       </div>
                     </div>
@@ -293,9 +327,13 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
 
                 {/* 加载状态 */}
                 {loading && (
-                  <div className="pt-4 border-t border-violet-400/20">
+                  <div
+                    className={`pt-4 border-t border-${cardTheme.base}-400/20`}
+                  >
                     <div className="flex items-center justify-center">
-                      <span className="text-violet-300 text-xs font-medium bg-violet-500/20 px-3 py-1.5 rounded-full border border-violet-400/30">
+                      <span
+                        className={`text-${cardTheme.base}-300 text-xs font-medium bg-${cardTheme.base}-500/20 px-3 py-1.5 rounded-full border border-${cardTheme.base}-400/30`}
+                      >
                         {isStreamingThinking
                           ? "AI 正在思考..."
                           : isStreamingAnswer
@@ -309,7 +347,9 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
             ) : loading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="flex flex-col items-center space-y-3">
-                  <div className="w-8 h-8 border-2 border-violet-400 border-t-transparent rounded-full animate-spin"></div>
+                  <div
+                    className={`w-8 h-8 border-2 border-${cardTheme.base}-400 border-t-transparent rounded-full animate-spin`}
+                  ></div>
                   <span className="text-white/80 text-sm">
                     {isStreamingThinking
                       ? "AI 正在思考..."
@@ -324,7 +364,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                 <div className="flex flex-col items-center space-y-4 text-center">
                   <FontAwesomeIcon
                     icon={faRobot}
-                    className="text-5xl mb-2 text-violet-300"
+                    className={`text-5xl mb-2 text-${cardTheme.base}-300`}
                   />
                   <h4 className="text-white font-bold text-lg">
                     AI 用户画像分析
@@ -344,13 +384,13 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
                     onMouseUp={(e) => {
                       e.stopPropagation();
                     }}
-                    className="px-6 py-3 bg-violet-500/30 hover:bg-violet-500/40 rounded-lg border border-violet-400/50 text-white font-medium transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer"
+                    className={`px-6 py-3 bg-${cardTheme.base}-500/30 hover:bg-${cardTheme.base}-500/40 rounded-lg border border-${cardTheme.base}-400/50 text-white font-medium transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer`}
                     style={{ pointerEvents: "auto" }}
                   >
                     <span className="flex items-center space-x-2">
                       <FontAwesomeIcon
                         icon={faRocket}
-                        className="text-violet-300"
+                        className={`text-${cardTheme.base}-300`}
                       />
                       <span>生成 AI 画像</span>
                     </span>

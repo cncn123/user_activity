@@ -6,33 +6,47 @@ interface SummaryCardProps {
   data: LocationData;
 }
 
+// Define consistent color schemes (violet-centric to match card theme)
+const NETWORK_COLORS = {
+  "5G": {
+    text: "text-violet-100",
+    bg: "bg-violet-500/20 border-violet-400/40",
+    icon: "text-emerald-300"
+  },
+  "4G": {
+    text: "text-violet-100",
+    bg: "bg-violet-500/20 border-violet-400/40",
+    icon: "text-cyan-300"
+  },
+  "3G": {
+    text: "text-violet-100",
+    bg: "bg-violet-500/20 border-violet-400/40",
+    icon: "text-amber-300"
+  },
+  default: {
+    text: "text-violet-100",
+    bg: "bg-violet-500/20 border-violet-400/40",
+    icon: "text-slate-300"
+  }
+};
+
+// Define violet-themed roaming status colors for consistency with card theme
+const ROAMING_STATUS_COLORS = {
+  roaming: {
+    bg: "bg-violet-500/30 text-violet-100 border-violet-400/50",
+    icon: "text-violet-300"
+  },
+  local: {
+    bg: "bg-violet-500/20 text-violet-100 border-violet-400/40",
+    icon: "text-violet-200"
+  }
+};
+
+
+
 export const SummaryCard = ({ data }: SummaryCardProps) => {
-  const getNetworkColor = (type: string) => {
-    switch (type) {
-      case "5G":
-        return "text-emerald-300";
-      case "4G":
-        return "text-cyan-300";
-      case "3G":
-        return "text-amber-300";
-      default:
-        return "text-white/80";
-    }
-  };
-
-  const getNetworkBgColor = (type: string) => {
-    switch (type) {
-      case "5G":
-        return "bg-emerald-500/20 border-emerald-500/30";
-      case "4G":
-        return "bg-cyan-500/20 border-cyan-500/30";
-      case "3G":
-        return "bg-amber-500/20 border-amber-500/30";
-      default:
-        return "bg-slate-500/20 border-slate-500/30";
-    }
-  };
-
+  const networkColor = NETWORK_COLORS[data.networkType as keyof typeof NETWORK_COLORS] || NETWORK_COLORS.default;
+  const roamingColor = data.isRoaming ? ROAMING_STATUS_COLORS.roaming : ROAMING_STATUS_COLORS.local;
 
   return (
     <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-violet shadow-2xl">
@@ -60,14 +74,14 @@ export const SummaryCard = ({ data }: SummaryCardProps) => {
             <span className="text-sm font-semibold text-violet-200">
               当前位置
             </span>
-            <span className="text-sm font-bold text-white drop-shadow-sm bg-violet-500/10 px-3 py-1 rounded-full border border-violet-400/30">
+            <span className="text-sm font-bold text-violet-100 drop-shadow-sm bg-violet-500/30 px-3 py-1 rounded-full border border-violet-400/50">
               {data.location}
             </span>
           </div>
           <div className="flex justify-between items-center py-3 border-b border-violet-400/20">
             <span className="text-sm font-semibold text-violet-200">网络</span>
             <span
-              className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${getNetworkBgColor(data.networkType)} ${getNetworkColor(data.networkType)}`}
+              className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${networkColor.bg} ${networkColor.text}`}
             >
               {data.networkType}
             </span>
@@ -75,9 +89,9 @@ export const SummaryCard = ({ data }: SummaryCardProps) => {
           <div className="flex justify-between items-center py-3 border-b border-violet-400/20">
             <span className="text-sm font-semibold text-violet-200">状态</span>
             <span
-              className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${data.isRoaming ? "bg-orange-400/40 text-orange-100 border-orange-300/60" : "bg-emerald-400/40 text-emerald-100 border-emerald-300/60"}`}
+              className={`text-sm font-bold px-3 py-1 rounded-full border shadow-sm ${roamingColor.bg}`}
             >
-              <FontAwesomeIcon icon={data.isRoaming ? faGlobe : faHome} className={`mr-2 ${data.isRoaming ? "text-orange-300" : "text-emerald-300"}`} />
+              <FontAwesomeIcon icon={data.isRoaming ? faGlobe : faHome} className={`mr-2 ${roamingColor.icon}`} />
               {data.isRoaming ? "漫游" : "本地"}
             </span>
           </div>

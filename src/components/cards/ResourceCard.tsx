@@ -1,6 +1,8 @@
 import { ResourceData } from "../../types/customer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faSignal, faExclamationTriangle, faBan, faRocket } from '@fortawesome/free-solid-svg-icons';
+import { faDatabase, faPhone, faSms, faWifi } from "@fortawesome/free-solid-svg-icons";
+import { CARD_THEMES } from "../../styles/theme";
 
 interface ResourceCardProps {
   data: ResourceData;
