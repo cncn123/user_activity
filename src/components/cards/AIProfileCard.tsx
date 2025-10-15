@@ -9,6 +9,7 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { CARD_THEMES } from "../../styles/theme";
+import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
 
 interface AIProfileCardProps {
   userData: any;
@@ -27,6 +28,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   const streamBufferRef = useRef<StreamBuffer | null>(null);
 
   const cardTheme = CARD_THEMES.AIProfile;
+  const headerChipClasses = buildThemeChipClasses(cardTheme.base);
 
   // 清理显示内容中的think标签
   const cleanDisplayContent = (content: string): string => {
@@ -171,13 +173,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   return (
     <div
       className={`h-full w-full flex flex-col p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
-      style={
-        {
-          "--theme-primary-rgb": `var(--${cardTheme.base}-primary-rgb)`,
-          "--theme-secondary-rgb": `var(--${cardTheme.base}-secondary-rgb)`,
-          "--theme-tertiary-rgb": `var(--${cardTheme.base}-tertiary-rgb)`,
-        } as React.CSSProperties
-      }
+      style={buildCardThemeStyles(cardTheme)}
     >
       <div className="flex flex-col flex-1 min-h-0">
         <div className="flex items-center justify-between mb-4 flex-shrink-0">
@@ -189,7 +185,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
           </h3>
           <div className="flex items-center space-x-2 flex-shrink-0">
             <div
-              className={`flex items-center bg-${cardTheme.base}-500/20 text-${cardTheme.base}-200 px-3 py-1.5 rounded-full text-xs border border-${cardTheme.base}-400/30 shadow-sm backdrop-blur-sm`}
+              className={`flex items-center ${headerChipClasses} px-3 py-1.5 rounded-full text-xs shadow-sm backdrop-blur-sm`}
             >
               <FontAwesomeIcon
                 icon={faRobot}
@@ -303,23 +299,37 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
 
                 {/* 分析结果 - 只在有最终答案时显示 */}
                 {finalAnswer && finalAnswer.trim() && (
-                  <div className="bg-emerald-500/10 border border-emerald-400/30 rounded-xl p-4">
+                  <div
+                    className={`bg-${cardTheme.base}-500/10 border border-${cardTheme.base}-400/30 rounded-xl p-4`}
+                  >
                     <div className="flex items-center mb-3">
-                      <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-pulse"></div>
-                      <span className="text-emerald-200 text-sm font-medium">
+                      <div
+                        className={`w-2 h-2 bg-${cardTheme.base}-400 rounded-full mr-2 animate-pulse`}
+                      ></div>
+                      <span
+                        className={`text-${cardTheme.base}-200 text-sm font-medium`}
+                      >
                         ✨ 分析结果
                       </span>
                       {isStreamingAnswer && (
                         <div className="ml-2 flex items-center">
-                          <span className="inline-block w-1 h-3 bg-emerald-400 animate-pulse"></span>
+                          <span
+                            className={`inline-block w-1 h-3 bg-${cardTheme.base}-400 animate-pulse`}
+                          ></span>
                         </div>
                       )}
-                      <div className="flex-1 ml-3 h-px bg-gradient-to-r from-emerald-400/30 to-transparent"></div>
+                      <div
+                        className={`flex-1 ml-3 h-px bg-gradient-to-r from-${cardTheme.base}-400/30 to-transparent`}
+                      ></div>
                     </div>
-                    <div className="text-white/95 text-sm leading-relaxed bg-emerald-500/20 rounded-lg p-4 border-l-2 border-emerald-400/50">
+                    <div
+                      className={`text-white/95 text-sm leading-relaxed bg-${cardTheme.base}-500/20 rounded-lg p-4 border-l-2 border-${cardTheme.base}-400/50`}
+                    >
                       {cleanDisplayContent(finalAnswer)}
                       {isStreamingAnswer && (
-                        <span className="inline-block w-2 h-4 bg-emerald-400 animate-pulse ml-1"></span>
+                        <span
+                          className={`inline-block w-2 h-4 bg-${cardTheme.base}-400 animate-pulse ml-1`}
+                        ></span>
                       )}
                     </div>
                   </div>

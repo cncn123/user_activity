@@ -1,8 +1,8 @@
 import { ResourceData } from "../../types/customer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faSignal, faExclamationTriangle, faBan, faRocket } from '@fortawesome/free-solid-svg-icons';
-import { faDatabase, faPhone, faSms, faWifi } from "@fortawesome/free-solid-svg-icons";
 import { CARD_THEMES } from "../../styles/theme";
+import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
 
 interface ResourceCardProps {
   data: ResourceData;
@@ -12,10 +12,14 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
   const getUsagePercentage = (used: number, total: number) =>
     Math.min((used / total) * 100, 100);
 
+  const hasOverage =
+    data.isDataOverLimit || data.isVoiceOverLimit || data.isSmsOverLimit;
+  const cardTheme = CARD_THEMES.Resource;
+  const headerChipClasses = buildThemeChipClasses(cardTheme.base);
   const getSpeedLimitColor = (speedLimit: string) => {
     switch (speedLimit) {
       case "正常":
-        return "text-emerald-300 bg-emerald-500/20 border-emerald-500/40";
+        return `text-${cardTheme.base}-200 bg-${cardTheme.base}-500/20 border-${cardTheme.base}-400/40`;
       case "限速":
         return "text-amber-300 bg-amber-500/20 border-amber-500/40";
       case "0速":
@@ -24,16 +28,23 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
         return "text-white/80 bg-slate-500/20 border-slate-500/40";
     }
   };
-
-  const hasOverage =
-    data.isDataOverLimit || data.isVoiceOverLimit || data.isSmsOverLimit;
+  const getSpeedLimitIconColor = (speedLimit: string) => {
+    if (speedLimit === "0速") return "text-red-300";
+    if (speedLimit === "限速") return "text-amber-300";
+    return `text-${cardTheme.base}-300`;
+  };
 
   return (
-    <div className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-cyan shadow-2xl">
+    <div
+      className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-themed shadow-2xl"
+      style={buildCardThemeStyles(cardTheme)}
+    >
       <div>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
-            <span className="w-3 h-3 bg-cyan-400 rounded-full mr-3 animate-pulse shadow-lg"></span>
+            <span
+              className={`w-3 h-3 bg-${cardTheme.pulse}-400 rounded-full mr-3 animate-pulse shadow-lg`}
+            ></span>
             数据使用
           </h3>
           <div className="flex items-center space-x-2">
@@ -43,8 +54,13 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
                 超套警告
               </div>
             )}
-            <div className="flex items-center bg-cyan-500/20 text-cyan-200 px-3 py-1.5 rounded-full text-xs border border-cyan-400/30 shadow-sm backdrop-blur-sm">
-              <FontAwesomeIcon icon={faClock} className="mr-1.5 text-cyan-300" />
+            <div
+              className={`flex items-center ${headerChipClasses} px-3 py-1.5 rounded-full text-xs shadow-sm backdrop-blur-sm`}
+            >
+              <FontAwesomeIcon
+                icon={faClock}
+                className={`mr-1.5 text-${cardTheme.base}-300`}
+              />
               <span className="font-mono mr-2">
                 {new Date(new Date().getTime() - 8 * 60000).toLocaleTimeString(
                   "zh-CN",
@@ -56,19 +72,30 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
           </div>
         </div>
 
-        <div className="mb-6 text-center py-4 border-b border-cyan-400/20">
-          <div className="text-xs text-cyan-200 font-medium mb-1">当前套餐</div>
-          <div className="text-lg font-extrabold text-white drop-shadow-sm bg-cyan-500/10 px-4 py-2 rounded-lg border border-cyan-400/20">
+        <div
+          className={`mb-6 text-center py-4 border-b border-${cardTheme.base}-400/20`}
+        >
+          <div className={`text-xs text-${cardTheme.base}-200 font-medium mb-1`}>
+            当前套餐
+          </div>
+          <div
+            className={`text-lg font-extrabold text-white drop-shadow-sm bg-${cardTheme.base}-500/10 px-4 py-2 rounded-lg border border-${cardTheme.base}-400/20`}
+          >
             {data.packageName}
           </div>
         </div>
 
         <div className="space-y-5">
           {/* 数据流量 */}
-          <div className="pb-4 border-b border-cyan-400/20">
+          <div
+            className={`pb-4 border-b border-${cardTheme.base}-400/20`}
+          >
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-bold text-white drop-shadow-sm flex items-center">
-                <FontAwesomeIcon icon={faSignal} className="mr-2 text-cyan-300" />
+                <FontAwesomeIcon
+                  icon={faSignal}
+                  className={`mr-2 text-${cardTheme.base}-300`}
+                />
                 数据流量
               </span>
               <div className="text-right">
@@ -83,9 +110,15 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
                 </div>
               </div>
             </div>
-            <div className="w-full bg-cyan-500/10 rounded-full h-3 mb-2 border border-cyan-400/20">
+            <div
+              className={`w-full bg-${cardTheme.base}-500/10 rounded-full h-3 mb-2 border border-${cardTheme.base}-400/20`}
+            >
               <div
-                className={`h-3 rounded-full transition-all duration-500 shadow-sm ${data.isDataOverLimit ? "bg-gradient-to-r from-red-500 to-red-600" : "bg-gradient-to-r from-cyan-400 to-cyan-600"}`}
+                className={`h-3 rounded-full transition-all duration-500 shadow-sm ${
+                  data.isDataOverLimit
+                    ? "bg-gradient-to-r from-red-500 to-red-600"
+                    : `bg-gradient-to-r from-${cardTheme.base}-400 to-${cardTheme.base}-500`
+                }`}
                 style={{
                   width: `${Math.min(getUsagePercentage(data.dataUsed, data.dataTotal), 100)}%`,
                 }}
@@ -100,7 +133,9 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
           </div>
 
           {/* 网络状态 */}
-          <div className="pt-4 border-t border-cyan-400/20">
+          <div
+            className={`pt-4 border-t border-${cardTheme.base}-400/20`}
+          >
             <div className="flex justify-between items-center">
               <span className="text-sm font-semibold text-white/90">
                 网络状态
@@ -108,9 +143,9 @@ export const ResourceCard = ({ data }: ResourceCardProps) => {
               <span
                 className={`text-sm font-semibold px-4 py-2 rounded-full border-2 ${getSpeedLimitColor(data.speedLimit)}`}
               >
-                <FontAwesomeIcon 
-                  icon={data.speedLimit === "0速" ? faBan : data.speedLimit === "限速" ? faClock : faRocket} 
-                  className={`mr-2 ${data.speedLimit === "0速" ? "text-red-300" : data.speedLimit === "限速" ? "text-amber-300" : "text-emerald-300"}`} 
+                <FontAwesomeIcon
+                  icon={data.speedLimit === "0速" ? faBan : data.speedLimit === "限速" ? faClock : faRocket}
+                  className={`mr-2 ${getSpeedLimitIconColor(data.speedLimit)}`}
                 />
                 {data.speedLimit === "0速" ? "0速" : data.speedLimit === "限速" ? "限速" : "正常"}
               </span>

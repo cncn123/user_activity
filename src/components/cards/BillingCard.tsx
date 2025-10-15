@@ -20,6 +20,7 @@ import {
   faChartLine,
 } from "@fortawesome/free-solid-svg-icons";
 import { CARD_THEMES } from "../../styles/theme";
+import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
 
 interface BillingCardProps {
   data: BillingData;
@@ -28,6 +29,7 @@ interface BillingCardProps {
 export const BillingCard = ({ data }: BillingCardProps) => {
   const { theme } = useTheme();
   const cardTheme = CARD_THEMES.Billing;
+  const headerChipClasses = buildThemeChipClasses(cardTheme.base);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -57,13 +59,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
   return (
     <div
       className={`h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
-      style={
-        {
-          "--theme-primary-rgb": `var(--${cardTheme.base}-primary-rgb)`,
-          "--theme-secondary-rgb": `var(--${cardTheme.base}-secondary-rgb)`,
-          "--theme-tertiary-rgb": `var(--${cardTheme.base}-tertiary-rgb)`,
-        } as React.CSSProperties
-      }
+      style={buildCardThemeStyles(cardTheme)}
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
@@ -75,7 +71,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
           </h3>
         </div>
         <div
-          className={`flex items-center bg-${cardTheme.base}-500/20 text-${cardTheme.base}-200 px-3 py-1.5 rounded-full text-xs border border-${cardTheme.base}-400/30 shadow-sm backdrop-blur-sm`}
+          className={`flex items-center ${headerChipClasses} px-3 py-1.5 rounded-full text-xs shadow-sm backdrop-blur-sm`}
         >
           <FontAwesomeIcon
             icon={faClock}

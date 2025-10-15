@@ -8,27 +8,25 @@ import {
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
 import { CARD_THEMES } from "../../styles/theme";
+import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
 
 interface LocationCardProps {
   data: LocationData;
 }
 
-// Define consistent color schemes
-const ROAMING_STATUS_COLORS = {
+const createRoamingStatusStyles = (themeBase: string) => ({
   roaming: {
-    bg: "bg-amber-400/30 text-amber-100 border-amber-300/50",
-    icon: "text-amber-300"
+    bg: `bg-${themeBase}-500/30 text-${themeBase}-100 border-${themeBase}-400/60`,
+    icon: `text-${themeBase}-100`,
   },
   local: {
-    bg: "bg-emerald-400/30 text-emerald-100 border-emerald-300/50",
-    icon: "text-emerald-300"
-  }
-};
+    bg: `bg-${themeBase}-500/20 text-${themeBase}-100 border-${themeBase}-400/40`,
+    icon: `text-${themeBase}-200`,
+  },
+});
 
-const TRACK_ICON_COLORS = {
-  roaming: "text-amber-300",
-  local: "text-violet-300"
-};
+const getTrackIconColor = (themeBase: string, isRoaming: boolean) =>
+  `text-${themeBase}-${isRoaming ? "200" : "300"}`;
 
 
 
@@ -43,20 +41,16 @@ const getTimeAgo = (timestamp: string) => {
 
 export const LocationCard = ({ data }: LocationCardProps) => {
   const cardTheme = CARD_THEMES.Location;
+  const headerChipClasses = buildThemeChipClasses(cardTheme.base);
+  const roamingStyles = createRoamingStatusStyles(cardTheme.base);
   const roamingColor = data.isRoaming
-    ? ROAMING_STATUS_COLORS.roaming
-    : ROAMING_STATUS_COLORS.local;
+    ? roamingStyles.roaming
+    : roamingStyles.local;
 
   return (
     <div
       className={`h-full w-full flex flex-col p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
-      style={
-        {
-          "--theme-primary-rgb": `var(--${cardTheme.base}-primary-rgb)`,
-          "--theme-secondary-rgb": `var(--${cardTheme.base}-secondary-rgb)`,
-          "--theme-tertiary-rgb": `var(--${cardTheme.base}-tertiary-rgb)`,
-        } as React.CSSProperties
-      }
+      style={buildCardThemeStyles(cardTheme)}
     >
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
@@ -66,7 +60,7 @@ export const LocationCard = ({ data }: LocationCardProps) => {
           客户位置
         </h3>
         <div
-          className={`flex items-center bg-${cardTheme.base}-500/20 text-${cardTheme.base}-200 px-3 py-1.5 rounded-full text-xs border border-${cardTheme.base}-400/30 shadow-sm backdrop-blur-sm`}
+          className={`flex items-center ${headerChipClasses} px-3 py-1.5 rounded-full text-xs shadow-sm backdrop-blur-sm`}
         >
           <FontAwesomeIcon
             icon={faClock}
@@ -136,11 +130,7 @@ export const LocationCard = ({ data }: LocationCardProps) => {
                   icon={
                     <FontAwesomeIcon
                       icon={track.isRoaming ? faGlobe : faMapMarkerAlt}
-                      className={
-                        track.isRoaming
-                          ? TRACK_ICON_COLORS.roaming
-                          : `text-${cardTheme.base}-300`
-                      }
+                      className={getTrackIconColor(cardTheme.base, track.isRoaming)}
                     />
                   }
                   themeColor={cardTheme.base}
