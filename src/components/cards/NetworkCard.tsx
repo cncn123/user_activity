@@ -2,7 +2,8 @@ import { NetworkData } from "../../types/customer";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faSignal, faRocket, faBolt, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 import { CARD_THEMES } from "../../styles/theme";
-import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
+import { buildThemeChipClasses } from "../../utils/themeStyles";
+import { ThemedCard } from "./common";
 
 interface NetworkCardProps {
   data: NetworkData;
@@ -36,10 +37,7 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
   const headerChipClasses = buildThemeChipClasses(cardTheme.base);
 
   return (
-    <div
-      className="h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-themed shadow-2xl"
-      style={buildCardThemeStyles(cardTheme)}
-    >
+    <ThemedCard theme={cardTheme} className="justify-between">
       <div>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
@@ -118,6 +116,6 @@ export const NetworkCard = ({ data }: NetworkCardProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </ThemedCard>
   );
 };

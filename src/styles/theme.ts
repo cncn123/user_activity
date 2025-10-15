@@ -12,20 +12,20 @@ export const CARD_THEMES = {
     pulse: THEME_COLORS.VIOLET,
   },
   Billing: {
-    base: "orange",
-    pulse: "orange",
+    base: THEME_COLORS.ORANGE,
+    pulse: THEME_COLORS.ORANGE,
   },
   Location: {
-    base: "violet",
-    pulse: "violet",
+    base: THEME_COLORS.VIOLET,
+    pulse: THEME_COLORS.VIOLET,
   },
   Network: {
-    base: "emerald",
-    pulse: "emerald",
+    base: THEME_COLORS.EMERALD,
+    pulse: THEME_COLORS.EMERALD,
   },
   Resource: {
-    base: "cyan",
-    pulse: "cyan",
+    base: THEME_COLORS.CYAN,
+    pulse: THEME_COLORS.CYAN,
   },
   Summary: {
     base: THEME_COLORS.BLUE,

@@ -9,7 +9,8 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { CARD_THEMES } from "../../styles/theme";
-import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
+import { buildThemeChipClasses } from "../../utils/themeStyles";
+import { ThemedCard } from "./common";
 
 interface AIProfileCardProps {
   userData: any;
@@ -171,10 +172,7 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
   };
 
   return (
-    <div
-      className={`h-full w-full flex flex-col p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
-      style={buildCardThemeStyles(cardTheme)}
-    >
+    <ThemedCard theme={cardTheme}>
       <div className="flex flex-col flex-1 min-h-0">
         <div className="flex items-center justify-between mb-4 flex-shrink-0">
           <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
@@ -411,6 +409,6 @@ export const AIProfileCard = ({ userData }: AIProfileCardProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </ThemedCard>
   );
 };

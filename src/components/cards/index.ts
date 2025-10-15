@@ -4,3 +4,4 @@ export { NetworkCard } from './NetworkCard';
 export { ResourceCard } from './ResourceCard';
 export { BillingCard } from './BillingCard';
 export { SummaryCard } from './SummaryCard';
+export { ThemedCard } from './common';

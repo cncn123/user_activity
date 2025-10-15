@@ -20,7 +20,8 @@ import {
   faChartLine,
 } from "@fortawesome/free-solid-svg-icons";
 import { CARD_THEMES } from "../../styles/theme";
-import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
+import { buildThemeChipClasses } from "../../utils/themeStyles";
+import { ThemedCard } from "./common";
 
 interface BillingCardProps {
   data: BillingData;
@@ -57,10 +58,7 @@ export const BillingCard = ({ data }: BillingCardProps) => {
   };
 
   return (
-    <div
-      className={`h-full w-full flex flex-col justify-between p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
-      style={buildCardThemeStyles(cardTheme)}
-    >
+    <ThemedCard theme={cardTheme} className="justify-between">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <span
@@ -303,6 +301,6 @@ export const BillingCard = ({ data }: BillingCardProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </ThemedCard>
   );
 };

@@ -8,7 +8,8 @@ import {
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
 import { CARD_THEMES } from "../../styles/theme";
-import { buildCardThemeStyles, buildThemeChipClasses } from "../../utils/themeStyles";
+import { buildThemeChipClasses } from "../../utils/themeStyles";
+import { ThemedCard } from "./common";
 
 interface LocationCardProps {
   data: LocationData;
@@ -48,10 +49,7 @@ export const LocationCard = ({ data }: LocationCardProps) => {
     : roamingStyles.local;
 
   return (
-    <div
-      className={`h-full w-full flex flex-col p-6 text-white rounded-3xl glass-card-themed shadow-2xl`}
-      style={buildCardThemeStyles(cardTheme)}
-    >
+    <ThemedCard theme={cardTheme}>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-extrabold text-white drop-shadow-sm flex items-center">
           <span
@@ -141,6 +139,6 @@ export const LocationCard = ({ data }: LocationCardProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </ThemedCard>
   );
 };
